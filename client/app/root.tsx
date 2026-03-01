@@ -8,8 +8,9 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { ThemeProvider } from "@emotion/react";
-import { createTheme } from "@mui/material";
+import { createTheme, CssBaseline } from "@mui/material";
+import { Topbar } from "./components/Topbar";
+import { ThemeProvider } from "@mui/material/styles";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -44,11 +45,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 const theme = createTheme({
   palette: {
+    mode: "dark"
   }
 });
 
 export default function App() {
   return <ThemeProvider theme={theme}>
+    <CssBaseline />
     <Outlet />
   </ThemeProvider>;
 }
