@@ -2,6 +2,7 @@ import { Box, Button, Stack } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
 import { Details } from "~/components/Details";
 import { PageBody } from "~/components/PageBody";
+import { Questions } from "~/components/Questions";
 import { Settings } from "~/components/Settings";
 import { Topbar } from "~/components/Topbar";
 
@@ -28,6 +29,7 @@ export default function Editor() {
                         <Stack spacing={5}>
                             <Details />
                             <Settings />
+                            <Questions />
                         </Stack>
                         <Button
                             size="large"

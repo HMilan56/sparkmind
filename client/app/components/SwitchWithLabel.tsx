@@ -1,20 +1,23 @@
-import { Box, FormControlLabel, FormGroup, Switch } from "@mui/material";
+import { Box, FormControlLabel, FormGroup, Paper, Switch, Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 export type SwitchWithLabelProps = {
     label: string
 };
 
-export default function SwitchWithLabel() {
+export default function SwitchWithLabel({ label }: SwitchWithLabelProps) {
     return (
-        <Box display={"flex"} justifyContent={"flex-start"}>
+        <Paper sx={{ p: "8px", bgcolor: grey[800], maxWidth: "400px", width: "100%", justifyContent: "center", display: "flex" }}>
             <FormGroup>
                 <FormControlLabel
                     control={
-                        <Switch defaultChecked />
+                        <Switch />
                     }
-                    label="Label"
+                    label={
+                        <Typography fontWeight={600}>{label}</Typography>
+                    }
                     labelPlacement="start" />
             </FormGroup>
-        </Box>
+        </Paper>
     );
 }
