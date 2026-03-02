@@ -1,13 +1,16 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import { Link } from "react-router";
+import { PageBody } from "~/components/PageBody";
 import { QuizGrid } from "~/components/QuizGrid";
 import { Topbar } from "~/components/Topbar";
 
 export default function Library() {
     return (
         <>
-            <Topbar />
-            <QuizGrid />
+            <Topbar title="Quiz Library"/>
+            <PageBody>
+                <QuizGrid />
+            </PageBody>
         </>
     )
 }
