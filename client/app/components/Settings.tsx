@@ -1,6 +1,6 @@
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import SwitchWithLabel from "./SwitchWithLabel";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
 const modes = [
     "https://placehold.co/600x400?text=Mode",
@@ -10,7 +10,7 @@ const modes = [
 ]
 
 export function Settings() {
-    const { register } = useFormContext();
+    const { control } = useFormContext();
 
     return (
         <Stack spacing={5}>
@@ -36,14 +36,38 @@ export function Settings() {
                 <Grid container spacing={10}>
                     <Grid size={6}>
                         <Stack gap={3} alignItems={"flex-start"}>
-                            <SwitchWithLabel label="Setting #1" />
-                            <SwitchWithLabel label="Setting #2" />
+                            <Controller 
+                                control={control}
+                                name="settings.setting1"
+                                render={ ({ field: { onChange, value } }) =>
+                                    <SwitchWithLabel label="Setting #1" checked={value} onChange={onChange}/>
+                                }
+                            />
+                            <Controller 
+                                control={control}
+                                name="settings.setting2"
+                                render={ ({ field: { onChange, value } }) =>
+                                    <SwitchWithLabel label="Setting #2" checked={value} onChange={onChange}/>
+                                }
+                            />
                         </Stack>
                     </Grid>
                     <Grid size={6}>
                         <Stack gap={3} alignItems={"flex-end"}>
-                            <SwitchWithLabel label="Setting #3" />
-                            <SwitchWithLabel label="Setting #4" />
+                            <Controller 
+                                control={control}
+                                name="settings.setting3"
+                                render={ ({ field: { onChange, value } }) =>
+                                    <SwitchWithLabel label="Setting #3" checked={value} onChange={onChange}/>
+                                }
+                            />
+                            <Controller 
+                                control={control}
+                                name="settings.setting4"
+                                render={ ({ field: { onChange, value } }) =>
+                                    <SwitchWithLabel label="Setting #4" checked={value} onChange={onChange}/>
+                                }
+                            />
                         </Stack>
                     </Grid>
                 </Grid>

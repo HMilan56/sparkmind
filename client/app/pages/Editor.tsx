@@ -7,16 +7,11 @@ import { PageBody } from "~/components/PageBody";
 import { Questions } from "~/components/Questions";
 import { Settings } from "~/components/Settings";
 import { Topbar } from "~/components/Topbar";
-import { mockQuizSerivce } from "~/services/quizService";
-
-export type QuizFormData = {
-    title: string,
-    desc: string
-};
+import { mockQuizSerivce, type QuizData } from "~/services/quizService";
 
 export default function Editor(quizId: number) {
-    const methods = useForm<QuizFormData>({
-        defaultValues: { title: "", desc: ""}
+    const methods = useForm<QuizData>({
+        defaultValues: { header: { title: "", desc: "" }}
     });
 
     const { data, status } = useQuery({
@@ -29,7 +24,7 @@ export default function Editor(quizId: number) {
             methods.reset(data);
     }, [data]);
 
-    const onSave = (data: QuizFormData) => {
+    const onSave = (data: QuizData) => {
         console.log("Unified Data:", data);
     };
 

@@ -17,13 +17,13 @@ export function Details() {
                     <Stack spacing={2}>
                         <Controller
                             control={control}
-                            name="title"
+                            name="header.title"
                             render={({ field: { onChange, value } }) => (
                                 <TextField onChange={onChange} value={value} label="Title" fullWidth />
                             )} />
                         <Controller
                             control={control}
-                            name="desc"
+                            name="header.desc"
                             render={({ field: { onChange, value } }) => (
                                 <TextField
                                     onChange={onChange}

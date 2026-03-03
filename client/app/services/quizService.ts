@@ -1,7 +1,11 @@
-export type QuizData = {
+export type QuizHeader = {
     id: number;
     title: string;
     desc: string;
+}
+
+export type QuizData = {
+    header: QuizHeader;
     mode: string;
     settings: QuizSettings;
     questions: QuestionData[];
@@ -39,9 +43,11 @@ export interface IQuizService {
 export const mockQuizSerivce: IQuizService = {
     getQuizById: async (id) => {
         return {
-            id: 10,
-            title: "Test Quiz",
-            desc: "This is a test quiz",
+            header: {
+                id: 10,
+                title: "Test Quiz",
+                desc: "This is a test quiz",
+            },
             mode: "n/a",
             settings: {
                 setting1: false,

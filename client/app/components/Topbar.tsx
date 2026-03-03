@@ -17,7 +17,7 @@ export function Topbar({title}: TopbarProps) {
     return (
         <AppBar position="sticky" sx={{ p: 1 }}>
             <Toolbar>
-                <Box width={"100%"} display={"flex"} justifyContent={"space-between"} >
+                <Box width={"100%"} display={"flex"} justifyContent={"space-between"}>
                     <Stack direction={"row"} alignItems={"center"} spacing={2}>
                         <Typography fontWeight={600} variant="h3">{title}</Typography>
                         <Link to={"/"}>

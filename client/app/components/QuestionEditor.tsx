@@ -4,13 +4,31 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { grey } from '@mui/material/colors';
-import { Grid, Stack, TextField } from '@mui/material';
+import { Button, Grid, Stack, TextField } from '@mui/material';
 import { Answer } from './Answer';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import type { AnswerData, QuizData } from '~/services/quizService';
 
-export function QuestionEditor() {
+export type QuestionEditorProps = {
+    index: number
+}
+
+export function QuestionEditor({ index }: QuestionEditorProps) {
+    const { control } = useFormContext<QuizData>();
+
+    // Nested Field Array for answers
+    const { fields: answerFields, append: appendAnswer, remove: removeAnswer } = useFieldArray({
+        control,
+        name: `questions.${index}.answers`
+    });
+
+    function addAnswer() {
+        appendAnswer({id: 0, answer: "", correct: false})
+    }
+
     return (
         <div>
-            <Accordion sx={{bgcolor: grey[600]}}>
+            <Accordion sx={{ bgcolor: grey[600] }}>
                 <AccordionSummary
                     expandIcon={<ArrowDropDownIcon />}
                 >
@@ -20,16 +38,25 @@ export function QuestionEditor() {
                     <Grid container spacing={5}>
                         <Grid size={8}>
                             <Stack spacing={5}>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    rows={3}
-                                    label="Question text"
+                                <Controller
+                                    control={control}
+                                    name={`questions.${index}.text`}
+                                    render={({ field: { value, onChange } }) =>
+                                        <TextField
+                                            value={value}
+                                            onChange={onChange}
+                                            fullWidth
+                                            multiline
+                                            rows={3}
+                                            label="Question text"
+                                        />
+                                    }
                                 />
-                                <Stack spacing={1}>
-                                    <Answer />
-                                    <Answer />
-                                    <Answer />
+                                <Stack spacing={2}>
+                                    {answerFields.map((field, answerIndex) =>
+                                        <Answer questionIndex={index} answerIndex={answerIndex} key={field.id} />
+                                    )}
+                                    <Button color="inherit" variant="contained" sx={{ alignSelf: "flex-start" }} onClick={addAnswer}>Add answer</Button>
                                 </Stack>
                             </Stack>
                         </Grid>
