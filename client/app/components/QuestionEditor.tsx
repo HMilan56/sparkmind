@@ -4,7 +4,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { grey } from '@mui/material/colors';
-import { Checkbox, Grid, Paper, Stack, TextField } from '@mui/material';
+import { Grid, Stack, TextField } from '@mui/material';
 import { Answer } from './Answer';
 
 export function QuestionEditor() {

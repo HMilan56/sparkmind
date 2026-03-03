@@ -1,5 +1,3 @@
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-import { Link } from "react-router";
 import { PageBody } from "~/components/PageBody";
 import { QuizGrid } from "~/components/QuizGrid";
 import { Topbar } from "~/components/Topbar";

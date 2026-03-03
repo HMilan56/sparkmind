@@ -1,14 +1,13 @@
-import { Box, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
-import { useFormContext } from "react-hook-form";
+import { Grid, Stack, TextField, Typography } from "@mui/material";
+import { Controller, useFormContext } from "react-hook-form";
 import { QuizImage } from "./QuizImage";
-// import { QuizImage } from "./QuizImage";
 
 const width = 600;
 const height = 400;
 const src = `https://placehold.co/${width}x${height}?text=Quiz Image`
 
 export function Details() {
-    const { register } = useFormContext();
+    const { control } = useFormContext();
 
     return (
         <Stack spacing={2}>
@@ -16,14 +15,25 @@ export function Details() {
             <Grid container spacing={5}>
                 <Grid size={{ md: 6, sm: 12 }}>
                     <Stack spacing={2}>
-                        <TextField {...register("title")} label="Title" fullWidth />
-                        <TextField
-                            {...register("desc")}
-                            label="Description"
-                            multiline
-                            rows={6}
-                            fullWidth
-                        />
+                        <Controller
+                            control={control}
+                            name="title"
+                            render={({ field: { onChange, value } }) => (
+                                <TextField onChange={onChange} value={value} label="Title" fullWidth />
+                            )} />
+                        <Controller
+                            control={control}
+                            name="desc"
+                            render={({ field: { onChange, value } }) => (
+                                <TextField
+                                    onChange={onChange}
+                                    label="Description"
+                                    value={value}
+                                    multiline
+                                    rows={6}
+                                    fullWidth
+                                />
+                            )} />
                     </Stack>
                 </Grid>
 

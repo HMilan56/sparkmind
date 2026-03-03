@@ -1,4 +1,4 @@
-import { Box, FormControlLabel, FormGroup, Paper, Switch, Typography } from "@mui/material";
+import { FormControlLabel, FormGroup, Paper, Switch, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
 export type SwitchWithLabelProps = {

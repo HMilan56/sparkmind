@@ -9,8 +9,8 @@ import {
 
 import type { Route } from "./+types/root";
 import { createTheme, CssBaseline } from "@mui/material";
-import { Topbar } from "./components/Topbar";
 import { ThemeProvider } from "@mui/material/styles";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -49,10 +49,14 @@ const theme = createTheme({
   }
 });
 
+const queryClient = new QueryClient();
+
 export default function App() {
   return <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <Outlet />
+    <QueryClientProvider client={queryClient}>
+      <CssBaseline />
+      <Outlet />
+    </QueryClientProvider>
   </ThemeProvider>;
 }
 

@@ -1,20 +1,33 @@
 import { Box, Button, Stack } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Details } from "~/components/Details";
 import { PageBody } from "~/components/PageBody";
 import { Questions } from "~/components/Questions";
 import { Settings } from "~/components/Settings";
 import { Topbar } from "~/components/Topbar";
+import { mockQuizSerivce } from "~/services/quizService";
 
 export type QuizFormData = {
     title: string,
     desc: string
 };
 
-export default function Editor() {
+export default function Editor(quizId: number) {
     const methods = useForm<QuizFormData>({
         defaultValues: { title: "", desc: ""}
     });
+
+    const { data, status } = useQuery({
+        queryKey: ["quizData", quizId],
+        queryFn: () => mockQuizSerivce.getQuizById(quizId)
+    });
+
+    useEffect(() => {
+        if (data)
+            methods.reset(data);
+    }, [data]);
 
     const onSave = (data: QuizFormData) => {
         console.log("Unified Data:", data);
