@@ -73,3 +73,15 @@ export const mockQuizSerivce: IQuizService = {
         };
     }
 };
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+console.log(`Base URL is: ${BASE_URL}`);
+
+export const quizService: IQuizService = {
+    getQuizById: async (id) => {
+        let result = await fetch(`${BASE_URL}/quiz/${id}`);
+        let data = await result.json();
+        return data as QuizData;
+    }
+};

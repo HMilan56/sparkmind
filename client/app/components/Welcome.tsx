@@ -8,7 +8,7 @@ export function Welcome() {
 
       <Stack>
         <Link to={"/library"}>Library</Link>
-        <Link to={"/editor"}>Editor</Link>
+        <Link to={"/editor/1"}>Editor</Link>
         <Link to={"/join"}>Join</Link>
         <Link to={"/lobby"}>Lobby</Link>
         <Link to={"/game"}>Game</Link>
