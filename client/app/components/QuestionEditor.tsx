@@ -4,16 +4,19 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { grey } from '@mui/material/colors';
-import { Button, Grid, Stack, TextField } from '@mui/material';
+import { Button, Grid, IconButton, Stack, TextField } from '@mui/material';
 import { Answer } from './Answer';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-import type { AnswerData, QuizData } from '~/services/quizService';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import type { QuizData } from '~/services/quiz-service/types';
+
 
 export type QuestionEditorProps = {
-    index: number
+    index: number;
+    onRemove: () => void;
 }
 
-export function QuestionEditor({ index }: QuestionEditorProps) {
+export function QuestionEditor({ index, onRemove }: QuestionEditorProps) {
     const { control } = useFormContext<QuizData>();
 
     // Nested Field Array for answers
@@ -23,7 +26,7 @@ export function QuestionEditor({ index }: QuestionEditorProps) {
     });
 
     function addAnswer() {
-        appendAnswer({id: 0, answer: "", correct: false})
+        appendAnswer({ id: 0, answer: "", correct: false })
     }
 
     return (
@@ -32,7 +35,12 @@ export function QuestionEditor({ index }: QuestionEditorProps) {
                 <AccordionSummary
                     expandIcon={<ArrowDropDownIcon />}
                 >
-                    <Typography component="span">Question #1</Typography>
+                    <Stack width={"100%"} direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+                        <Typography component="span">Question #1</Typography>
+                        <IconButton onClick={onRemove}>
+                            <DeleteForeverIcon color="error" />
+                        </IconButton>
+                    </Stack>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container spacing={5}>
@@ -54,7 +62,12 @@ export function QuestionEditor({ index }: QuestionEditorProps) {
                                 />
                                 <Stack spacing={2}>
                                     {answerFields.map((field, answerIndex) =>
-                                        <Answer questionIndex={index} answerIndex={answerIndex} key={field.id} />
+                                        <Answer
+                                            key={field.id}
+                                            questionIndex={index}
+                                            answerIndex={answerIndex}
+                                            onRemove={() => removeAnswer(answerIndex)}
+                                        />
                                     )}
                                     <Button color="inherit" variant="contained" sx={{ alignSelf: "flex-start" }} onClick={addAnswer}>Add answer</Button>
                                 </Stack>

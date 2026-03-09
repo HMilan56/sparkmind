@@ -1,12 +1,11 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { QuestionEditor } from "./QuestionEditor";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import type { QuizData } from "~/services/quizService";
-
+import type { QuizData } from "~/services/quiz-service/types";
 
 export function Questions() {
     const { control } = useFormContext<QuizData>();
-    const { fields, append } = useFieldArray({
+    const { fields, append, remove } = useFieldArray({
         control,
         name: "questions"
     })
@@ -34,7 +33,7 @@ export function Questions() {
             <Typography variant="h4" fontWeight={600}>Questions</Typography>
             <Stack spacing={2}>
                 {fields.map((field, index) =>
-                    <QuestionEditor key={field.id} index={index}/>
+                    <QuestionEditor key={field.id} index={index} onRemove={() => remove(index)}/>
                 )}
                 <Button color="inherit" variant="contained" sx={{ alignSelf: "flex-start" }} onClick={addQuestion}>Add question</Button>
             </Stack>

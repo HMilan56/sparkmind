@@ -8,7 +8,8 @@ import { PageBody } from "~/components/PageBody";
 import { Questions } from "~/components/Questions";
 import { Settings } from "~/components/Settings";
 import { Topbar } from "~/components/Topbar";
-import { quizService, type QuizData } from "~/services/quizService";
+import { mockQuizSerivce } from "~/services/quiz-service/mockQuizService";
+import type { QuizData } from "~/services/quiz-service/types";
 
 export default function Editor() {
     const { quizId: quizIdParam } = useParams();
@@ -19,7 +20,7 @@ export default function Editor() {
 
     const { data, status } = useQuery({
         queryKey: ["quizData", quizId],
-        queryFn: () => quizService.getQuizById(quizId),
+        queryFn: () => mockQuizSerivce.getQuizById(quizId),
         enabled: !Number.isNaN(quizId)
     });
 

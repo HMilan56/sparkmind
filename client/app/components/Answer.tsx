@@ -1,13 +1,15 @@
-import { Checkbox, Stack, TextField, useFormControl } from "@mui/material";
+import { Checkbox, IconButton, Stack, TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
-import type { QuizData } from "~/services/quizService";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import type { QuizData } from "~/services/quiz-service/types";
 
 export type AnswerProps = {
     questionIndex: number;
     answerIndex: number;
+    onRemove: () => void;
 }
 
-export function Answer({ questionIndex, answerIndex }: AnswerProps) {
+export function Answer({ questionIndex, answerIndex, onRemove }: AnswerProps) {
     const { control } = useFormContext<QuizData>();
 
     return (
@@ -26,6 +28,9 @@ export function Answer({ questionIndex, answerIndex }: AnswerProps) {
                     <Checkbox {...field} checked={field.value} color="success" />
                 )}
             />
+            <IconButton onClick={onRemove}>
+                <DeleteForeverIcon color="error"/>
+            </IconButton>
         </Stack>
     )
 }
