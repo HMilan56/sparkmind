@@ -8,7 +8,7 @@ import { PageBody } from "~/components/PageBody";
 import { Questions } from "~/components/Questions";
 import { Settings } from "~/components/Settings";
 import { Topbar } from "~/components/Topbar";
-import { mockQuizSerivce } from "~/services/quiz-service/mockQuizService";
+import { mockQuizSerivce } from "~/services/quiz-service/mock-service";
 import type { QuizData } from "~/services/quiz-service/types";
 
 export default function Editor() {

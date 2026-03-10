@@ -5,14 +5,14 @@ import { Box, IconButton, Stack, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 export type MenuOption = {
-    desc: string,
-    icon?: React.ReactNode,
-    onClick?: () => {}
+    desc: string;
+    icon?: React.ReactNode;
+    onClick?: () => void;
 };
 
 export type BasicMenuProps = {
-    menuIcon?: React.ReactNode,
-    options: MenuOption[]
+    menuIcon?: React.ReactNode;
+    options: MenuOption[];
 }
 
 export default function BasicMenu({ options, menuIcon }: BasicMenuProps) {

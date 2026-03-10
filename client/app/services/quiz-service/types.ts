@@ -38,4 +38,6 @@ export type AnswerData = {
 
 export interface IQuizService {
     getQuizById: (quizId: number) => Promise<QuizData>;
+    getUserLibrary: (userId: number) => Promise<QuizHeader[]>;
+    deleteQuizById: (quizId: number) => Promise<void>;
 }
