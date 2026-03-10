@@ -4,8 +4,7 @@ export type QuizHeader = {
     desc: string;
 }
 
-export type QuizData = {
-    header: QuizHeader;
+export type QuizData = QuizHeader & {
     mode: string;
     settings: QuizSettings;
     questions: QuestionData[];
@@ -32,8 +31,8 @@ export type QuestionSettings = {
 
 export type AnswerData = {
     id: number;
-    answer: string;
-    correct: boolean
+    text: string;
+    isCorrect: boolean
 };
 
 export interface IQuizService {

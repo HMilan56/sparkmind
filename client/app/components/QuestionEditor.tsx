@@ -4,7 +4,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { grey } from '@mui/material/colors';
-import { Button, Grid, IconButton, Stack, TextField } from '@mui/material';
+import { Button, Grid, Stack, TextField } from '@mui/material';
 import { Answer } from './Answer';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -25,23 +25,20 @@ export function QuestionEditor({ index, onRemove }: QuestionEditorProps) {
     });
 
     function addAnswer() {
-        appendAnswer({ id: 0, answer: "", correct: false })
+        appendAnswer({ id: 0, text: "", isCorrect: false })
     }
 
     return (
         <div>
             <Accordion sx={{ bgcolor: grey[600] }}>
                 <AccordionSummary
+
                     expandIcon={<ArrowDropDownIcon />}
                 >
-                    <Stack width={"100%"} direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
-                        <Typography component="span">Question #1</Typography>
-                        <IconButton onClick={onRemove}>
-                            <DeleteForeverIcon color="error" />
-                        </IconButton>
-                    </Stack>
+                    <Typography component="span">Question #1</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
+
                     <Grid container spacing={5}>
                         <Grid size={8}>
                             <Stack spacing={5}>
@@ -68,7 +65,10 @@ export function QuestionEditor({ index, onRemove }: QuestionEditorProps) {
                                             onRemove={() => removeAnswer(answerIndex)}
                                         />
                                     )}
-                                    <Button color="inherit" variant="contained" sx={{ alignSelf: "flex-start" }} onClick={addAnswer}>Add answer</Button>
+                                    <Stack direction={"row"} gap={1}>
+                                        <Button color="inherit" variant="contained" sx={{ alignSelf: "flex-start" }} onClick={addAnswer}>Add answer</Button>
+                                        <Button variant='contained' color="error" startIcon={<DeleteForeverIcon />} onClick={onRemove}>Delete question</Button>
+                                    </Stack>
                                 </Stack>
                             </Stack>
                         </Grid>

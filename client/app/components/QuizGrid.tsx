@@ -2,10 +2,10 @@ import { Grid, type AlertProps } from "@mui/material";
 import { QuizCard } from "./QuizCard";
 import type { QuizHeader } from "~/services/quiz-service/types";
 import { useNavigate } from "react-router";
-import { mockQuizService } from "~/services/quiz-service/mock-service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddQuizCard } from "./AddQuizCard";
 import { useSnackbar } from "~/contexts/SnackbarContext";
+import { quizService } from "~/services/quiz-service/service-factory";
 
 export type QuizGridProps = {
     cardData: QuizHeader[];
@@ -23,9 +23,12 @@ export function QuizGrid({ cardData }: QuizGridProps) {
     const { showSnackbar } = useSnackbar();
 
     const { mutate: deleteQuiz } = useMutation({
-        mutationFn: (quizId: number) => mockQuizService.deleteQuizById(quizId),
+        mutationFn: (quizId: number) => quizService.deleteQuizById(quizId),
         onMutate: () => {
-            showSnackbar("Deleting quiz...", "error");
+            showSnackbar("Deleting quiz...", "info");
+        },
+        onError: () => {
+            showSnackbar("Failed to delete quiz", "error");
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ["userLibrary"] });
@@ -34,14 +37,18 @@ export function QuizGrid({ cardData }: QuizGridProps) {
     })
 
     const { mutate: createQuiz } = useMutation({
-        mutationFn: (userId: number) => mockQuizService.createQuiz(userId),
+        mutationFn: (userId: number) => quizService.createQuiz(userId),
         onMutate: () => {
             showSnackbar("Creating quiz...", "info");
         },
-        onSuccess: (newQuiz) => {
-            queryClient.setQueryData(["quiz", newQuiz.header.id], newQuiz);
+        onError: () => {
+            showSnackbar("Failed to create quiz", "error");
+        },
+        onSuccess: async (newQuiz) => {
+            queryClient.setQueryData(["quiz", newQuiz.id], newQuiz);
             queryClient.invalidateQueries({queryKey: ["userLibrary"]})
-            navigate(`/editor/${newQuiz.header.id}`);
+            await navigate(`/editor/${newQuiz.id}`);
+            showSnackbar("Successfully created quiz.", "success");
         }
     });
 

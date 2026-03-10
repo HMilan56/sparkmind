@@ -15,14 +15,14 @@ export function Answer({ questionIndex, answerIndex, onRemove }: AnswerProps) {
     return (
         <Stack width={"100%"} direction={"row"}>
             <Controller
-                name={`questions.${questionIndex}.answers.${answerIndex}.answer`}
+                name={`questions.${questionIndex}.answers.${answerIndex}.text`}
                 control={control}
                 render={({ field }) => (
                     <TextField {...field} label="Answer" fullWidth size="small" />
                 )}
             />
             <Controller
-                name={`questions.${questionIndex}.answers.${answerIndex}.correct`}
+                name={`questions.${questionIndex}.answers.${answerIndex}.isCorrect`}
                 control={control}
                 render={({ field }) => (
                     <Checkbox {...field} checked={field.value} color="success" />

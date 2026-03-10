@@ -3,14 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { PageBody } from "~/components/PageBody";
 import { QuizGrid } from "~/components/QuizGrid";
 import { Topbar } from "~/components/Topbar";
-import { mockQuizService } from "~/services/quiz-service/mock-service";
+import { quizService } from "~/services/quiz-service/service-factory";
 
 const userId = 1;
 
 export default function Library() {
     const { data, status } = useQuery({
         queryKey: ["userLibrary", userId],
-        queryFn: () => mockQuizService.getUserLibrary(userId),
+        queryFn: () => quizService.getUserLibrary(userId),
         enabled: !Number.isNaN(userId)
     });
     

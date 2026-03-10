@@ -29,6 +29,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             builder.HasKey(q => q.Id);
             builder.HasOne(q => q.Quiz)
                 .WithMany(q => q.Questions);
+            builder.OwnsOne(q => q.Settings, ownedNavBuilder =>
+            {
+                ownedNavBuilder.ToJson();
+            });
         });
 
         modelBuilder.Entity<Answer>(builder =>

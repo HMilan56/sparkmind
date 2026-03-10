@@ -9,7 +9,7 @@ import { Questions } from "~/components/Questions";
 import { Settings } from "~/components/Settings";
 import { Topbar } from "~/components/Topbar";
 import { useSnackbar } from "~/contexts/SnackbarContext";
-import { mockQuizService } from "~/services/quiz-service/mock-service";
+import { quizService } from "~/services/quiz-service/service-factory";
 import type { QuizData } from "~/services/quiz-service/types";
 
 export default function Editor() {
@@ -21,7 +21,7 @@ export default function Editor() {
 
     const { data, status } = useQuery({
         queryKey: ["quizData", quizId],
-        queryFn: () => mockQuizService.getQuizById(quizId),
+        queryFn: () => quizService.getQuizById(quizId),
         enabled: !Number.isNaN(quizId)
     });
 
@@ -89,7 +89,7 @@ function EditorBody({ data }: { data: QuizData }) {
 
     const onSave = async (data: QuizData) => {
         showSnackbar("Saving changes...", "info");
-        await mockQuizService.saveQuiz(data);
+        await quizService.saveQuiz(data);
         showSnackbar("Save complete.", "success");
     };
 

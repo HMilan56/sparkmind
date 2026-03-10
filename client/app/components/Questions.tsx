@@ -17,8 +17,8 @@ export function Questions() {
             answers: [
                 {
                     id: 0,
-                    answer: "",
-                    correct: false
+                    text: "",
+                    isCorrect: false
                 }
             ],
             settings: {
