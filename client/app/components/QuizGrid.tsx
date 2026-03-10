@@ -31,9 +31,9 @@ export function QuizGrid({ cardData }: QuizGridProps) {
         onMutate: () => {
             openAlert("Deleting quiz...", "error");
         },
-        onSuccess: () => {
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["userLibrary"] });
             openAlert("Quiz successfully deleted", "success");
-            queryClient.invalidateQueries({ queryKey: ["userLibrary"] });
         }
     })
 
