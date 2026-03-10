@@ -1,10 +1,11 @@
-import { Alert, Grid, Snackbar, type AlertProps } from "@mui/material";
+import { Grid, type AlertProps } from "@mui/material";
 import { QuizCard } from "./QuizCard";
 import type { QuizHeader } from "~/services/quiz-service/types";
 import { useNavigate } from "react-router";
-import { mockQuizSerivce } from "~/services/quiz-service/mock-service";
+import { mockQuizService } from "~/services/quiz-service/mock-service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { AddQuizCard } from "./AddQuizCard";
+import { useSnackbar } from "~/contexts/SnackbarContext";
 
 export type QuizGridProps = {
     cardData: QuizHeader[];
@@ -19,45 +20,40 @@ type AlertState = {
 export function QuizGrid({ cardData }: QuizGridProps) {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const { showSnackbar } = useSnackbar();
 
-    const [alertState, setAlertState] = useState<AlertState>({
-        text: "",
-        severity: "info",
-        open: false
-    });
-
-    const { mutate } = useMutation({
-        mutationFn: (id: number) => mockQuizSerivce.deleteQuizById(id),
+    const { mutate: deleteQuiz } = useMutation({
+        mutationFn: (quizId: number) => mockQuizService.deleteQuizById(quizId),
         onMutate: () => {
-            openAlert("Deleting quiz...", "error");
+            showSnackbar("Deleting quiz...", "error");
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ["userLibrary"] });
-            openAlert("Quiz successfully deleted", "success");
+            showSnackbar("Quiz successfully deleted", "success");
         }
     })
 
-    function openAlert(text: string, severity: AlertProps["severity"]) {
-        setAlertState({
-            text,
-            severity,
-            open: true
-        });
-    }
-
-    function handleClose() {
-        setAlertState(prevState => ({
-            ...prevState,
-            open: false
-        }));
-    }
+    const { mutate: createQuiz } = useMutation({
+        mutationFn: (userId: number) => mockQuizService.createQuiz(userId),
+        onMutate: () => {
+            showSnackbar("Creating quiz...", "info");
+        },
+        onSuccess: (newQuiz) => {
+            queryClient.setQueryData(["quiz", newQuiz.header.id], newQuiz);
+            queryClient.invalidateQueries({queryKey: ["userLibrary"]})
+            navigate(`/editor/${newQuiz.header.id}`);
+        }
+    });
 
     return (
-        <>
-            <Grid
+        <Grid
                 container
                 spacing={5}
             >
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} display="flex"
+                    justifyContent="center">
+                    <AddQuizCard onClick={() => createQuiz(1)} />
+                </Grid>
                 {cardData.map(header => (
                     <Grid
                         key={header.id}
@@ -69,27 +65,10 @@ export function QuizGrid({ cardData }: QuizGridProps) {
                         <QuizCard
                             data={header}
                             onEdit={() => void navigate(`/editor/${header.id}`)}
-                            onDelete={() => mutate(header.id)}
+                            onDelete={() => deleteQuiz(header.id)}
                         />
                     </Grid>
                 ))}
             </Grid>
-            <AlertSnackbar {...alertState} handleClose={handleClose}/>
-        </>
-    );
-}
-
-function AlertSnackbar({ text, open, severity, handleClose }: { text: string, open: boolean, severity: AlertProps["severity"], handleClose: () => void }) {
-    return (
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: "bottom", horizontal: "center" }} >
-            <Alert
-                onClose={handleClose}
-                severity={severity}
-                variant="filled"
-                sx={{ width: '100%' }}
-            >
-                {text}
-            </Alert>
-        </Snackbar>
     );
 }

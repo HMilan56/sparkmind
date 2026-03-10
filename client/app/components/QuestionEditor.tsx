@@ -19,7 +19,6 @@ export type QuestionEditorProps = {
 export function QuestionEditor({ index, onRemove }: QuestionEditorProps) {
     const { control } = useFormContext<QuizData>();
 
-    // Nested Field Array for answers
     const { fields: answerFields, append: appendAnswer, remove: removeAnswer } = useFieldArray({
         control,
         name: `questions.${index}.answers`

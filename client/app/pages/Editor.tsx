@@ -8,7 +8,8 @@ import { PageBody } from "~/components/PageBody";
 import { Questions } from "~/components/Questions";
 import { Settings } from "~/components/Settings";
 import { Topbar } from "~/components/Topbar";
-import { mockQuizSerivce } from "~/services/quiz-service/mock-service";
+import { useSnackbar } from "~/contexts/SnackbarContext";
+import { mockQuizService } from "~/services/quiz-service/mock-service";
 import type { QuizData } from "~/services/quiz-service/types";
 
 export default function Editor() {
@@ -20,7 +21,7 @@ export default function Editor() {
 
     const { data, status } = useQuery({
         queryKey: ["quizData", quizId],
-        queryFn: () => mockQuizSerivce.getQuizById(quizId),
+        queryFn: () => mockQuizService.getQuizById(quizId),
         enabled: !Number.isNaN(quizId)
     });
 
@@ -79,13 +80,17 @@ function EditorLoading() {
 function EditorBody({ data }: { data: QuizData }) {
     const methods = useForm<QuizData>();
 
+    const { showSnackbar } = useSnackbar();
+
     useEffect(() => {
         if (data)
             methods.reset(data);
     }, [data]);
 
-    const onSave = (data: QuizData) => {
-        console.log("Unified Data:", data);
+    const onSave = async (data: QuizData) => {
+        showSnackbar("Saving changes...", "info");
+        await mockQuizService.saveQuiz(data);
+        showSnackbar("Save complete.", "success");
     };
 
     return (

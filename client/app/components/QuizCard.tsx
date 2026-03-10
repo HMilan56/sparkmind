@@ -1,11 +1,9 @@
-import { Box, Button, Card, CardActions, CardContent, CardMedia, IconButton, Paper, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Paper, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import BasicMenu, { type MenuOption } from "./BasicMenu";
+import BasicMenu from "./BasicMenu";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import type { QuizHeader } from "~/services/quiz-service/types";
-import { useNavigate } from "react-router";
-import { mockQuizSerivce } from "~/services/quiz-service/mock-service";
 
 function truncateText(text: string, maxLength: number) {
     if (text.length <= maxLength) return text;

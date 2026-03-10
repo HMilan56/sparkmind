@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
 import SwitchWithLabel from "./SwitchWithLabel";
 import { Controller, useFormContext } from "react-hook-form";
 

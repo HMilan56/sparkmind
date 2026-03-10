@@ -15,5 +15,13 @@ export const quizService: IQuizService = {
 
     deleteQuizById: function (quizId: number): Promise<void> {
         throw new Error("Function not implemented.");
+    },
+
+    createQuiz: function (userId: number): Promise<QuizData> {
+        throw new Error("Function not implemented.");
+    },
+
+    saveQuiz: function (): Promise<void> {
+        throw new Error("Function not implemented.");
     }
 };

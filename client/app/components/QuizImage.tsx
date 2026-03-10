@@ -40,7 +40,7 @@ export function QuizImage({ src, label, width = "100%", height = "auto" }: QuizI
                 <UploadIcon/>
             </IconButton>
 
-            <img src={src} height={"240px"} width={"auto"} />
+            <img src={src} alt="Quiz illustration" height={"240px"} width={"auto"} />
         </Box>
     );
 }

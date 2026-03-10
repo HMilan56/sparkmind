@@ -1,6 +1,5 @@
 import { FormControlLabel, FormGroup, Paper, Switch, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { useEffect, useState } from "react";
 
 export type SwitchWithLabelProps = {
     label: string;

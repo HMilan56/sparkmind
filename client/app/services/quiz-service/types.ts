@@ -40,4 +40,6 @@ export interface IQuizService {
     getQuizById: (quizId: number) => Promise<QuizData>;
     getUserLibrary: (userId: number) => Promise<QuizHeader[]>;
     deleteQuizById: (quizId: number) => Promise<void>;
+    createQuiz: (userId: number) => Promise<QuizData>;
+    saveQuiz: (quizData: QuizData) => Promise<void>;
 }
