@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{453B1079-881C-40E8-8117-DF024A46BD3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SparkMind.WebApi", "SparkMind.WebApi\SparkMind.WebApi.csproj", "{453B1079-881C-40E8-8117-DF024A46BD3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{F1244AE7-FA38-4FDE-AEB3-5737188E6007}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SparkMind.Infrastructure", "SparkMind.Infrastructure\SparkMind.Infrastructure.csproj", "{F1244AE7-FA38-4FDE-AEB3-5737188E6007}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{D35BDAD4-5CD0-447B-BF75-D36BE952F2CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SparkMind.Application", "SparkMind.Application\SparkMind.Application.csproj", "{D35BDAD4-5CD0-447B-BF75-D36BE952F2CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{3ECFADC1-0485-4F14-991E-23E36567A817}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SparkMind.Domain", "SparkMind.Domain\SparkMind.Domain.csproj", "{3ECFADC1-0485-4F14-991E-23E36567A817}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
