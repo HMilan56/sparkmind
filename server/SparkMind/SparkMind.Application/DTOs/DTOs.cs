@@ -20,7 +20,7 @@ public record QuestionDataDto(
 public record QuizDataDto(
     int Id,
     string Title,
-    string Description,
+    string Desc,
     QuizMode Mode,
     QuizSettingsDto Settings,
     List<QuestionDataDto> Questions

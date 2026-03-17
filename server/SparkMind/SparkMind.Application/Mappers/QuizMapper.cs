@@ -7,7 +7,10 @@ namespace SparkMind.Application.Mappers;
 [Mapper]
 public partial class QuizMapper
 {
+    [MapProperty(nameof(QuizDataDto.Desc), nameof(Quiz.Description))]
     public partial Quiz MapToDomain(QuizDataDto dto);
+    
+    [MapProperty(nameof(Quiz.Description), nameof(QuizDataDto.Desc))]
     public partial QuizDataDto MapToDto(Quiz quiz);
 
     public partial Question MapToDomain(QuestionDataDto dto);

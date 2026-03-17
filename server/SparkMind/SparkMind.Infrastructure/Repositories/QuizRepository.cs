@@ -19,7 +19,6 @@ public class QuizRepository(AppDbContext context) : IQuizRepository
     public async Task<IEnumerable<Quiz>> GetLibraryAsync(int userId)
     {
         return await context.Quizzes
-            .AsNoTracking()
             .Where(q => q.Author.Id == userId)
             .ToListAsync();
     }
@@ -56,9 +55,10 @@ public class QuizRepository(AppDbContext context) : IQuizRepository
         return newQuiz;
     }
 
-    public async Task UpdateAsync(Quiz quiz)
+    public async Task UpdateAsync(Quiz updatedQuiz)
     {
-        context.Quizzes.Update(quiz);
+        var quiz = await context.Quizzes.SingleAsync(q => q.Id == updatedQuiz.Id);
+        context.Entry(quiz).CurrentValues.SetValues(updatedQuiz);
         await context.SaveChangesAsync();
     }
 }
