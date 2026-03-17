@@ -8,7 +8,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { createTheme, CssBaseline } from "@mui/material";
+import { Box, CircularProgress, createTheme, CssBaseline, Typography } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
@@ -51,6 +51,57 @@ const theme = createTheme({
 });
 
 const queryClient = new QueryClient();
+
+export function HydrateFallback() {
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100vh',
+                    width: '100vw',
+                    gap: 3,
+                }}
+            >
+                <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                    <CircularProgress
+                        variant="determinate"
+                        value={100}
+                        size={80}
+                        thickness={4}
+                        sx={{ color: 'rgba(255,255,255,0.1)' }}
+                    />
+                    <CircularProgress
+                        variant="indeterminate"
+                        disableShrink
+                        size={80}
+                        thickness={4}
+                        sx={{
+                            position: 'absolute',
+                            left: 0,
+                            color: 'primary.main',
+                            animationDuration: '800ms',
+                        }}
+                    />
+                </Box>
+
+                <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="h4" sx={{ fontWeight: 800, letterSpacing: -1 }}>
+                        Spark<Box component="span" sx={{ color: 'primary.main' }}>Mind</Box>
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+                        Loading...
+                    </Typography>
+                </Box>
+            </Box>
+            <Scripts />
+        </ThemeProvider>
+    );
+}
 
 export default function App() {
     return (

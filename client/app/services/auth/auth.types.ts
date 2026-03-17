@@ -11,9 +11,6 @@ export type RegisterRequest = {
 
 export type AuthResponse = {
     token: string;
-    expiration: string;
-    userId: number;
-    username: string;
 };
 
 export interface IAuthService {

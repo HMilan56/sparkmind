@@ -1,4 +1,4 @@
-import apiClient from "../quiz/quiz.service";
+import apiClient from "../api-client";
 import type { AuthResponse, IAuthService, LoginRequest, RegisterRequest } from "./auth.types";
 
 export const authService: IAuthService = {
@@ -7,7 +7,6 @@ export const authService: IAuthService = {
         
         if (response.data.token) {
             localStorage.setItem("token", response.data.token);
-            localStorage.setItem("username", response.data.username);
         }
         
         return response.data;
@@ -19,7 +18,6 @@ export const authService: IAuthService = {
 
     logout: (): void => {
         localStorage.removeItem("token");
-        localStorage.removeItem("username");
     },
 
     getToken: (): string | null => {

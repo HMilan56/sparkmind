@@ -7,14 +7,10 @@ export const authMock: IAuthService = {
 
         if (credentials.password === "sparkmind") {
             const mockResponse: AuthResponse = {
-                token: "mock-jwt-token",
-                expiration: new Date(Date.now() + 3600 * 1000).toISOString(),
-                userId: 42,
-                username: "TestUser"
+                token: "mock-jwt-token"
             };
 
             localStorage.setItem("token", mockResponse.token);
-            localStorage.setItem("username", mockResponse.username);
             
             return mockResponse;
         } else {
@@ -31,7 +27,6 @@ export const authMock: IAuthService = {
 
     logout: (): void => {;
         localStorage.removeItem("token");
-        localStorage.removeItem("username");
     },
 
     getToken: (): string | null => {
