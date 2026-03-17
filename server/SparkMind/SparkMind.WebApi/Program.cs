@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using SparkMind.Application.Interfaces;
 using SparkMind.Application.Mappers;
 using SparkMind.Application.Services;
@@ -6,6 +9,7 @@ using SparkMind.Infrastructure.Data;
 using SparkMind.Infrastructure.Repositories;
 using SparkMind.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using SparkMind.WebApi.ErrorHandler;
 
@@ -44,7 +48,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentityApiEndpoints<User>(options =>
+builder.Services.AddIdentityCore<User>(options =>
     {
         options.Password.RequireDigit = false;
         options.Password.RequiredLength = 4;
@@ -52,11 +56,31 @@ builder.Services.AddIdentityApiEndpoints<User>(options =>
         options.Password.RequireUppercase = false;
         options.Password.RequireLowercase = false;
         options.Password.RequiredUniqueChars = 0;
-        options.SignIn.RequireConfirmedAccount = false;
     })
-    .AddEntityFrameworkStores<AppDbContext>();
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddSignInManager();
 
-builder.Services.AddAuthentication();
+
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["Key"]!)
+            )
+        };
+    });
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -66,6 +90,7 @@ builder.Services.AddSingleton<QuizMapper>();
 
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 builder.Services.AddScoped<IQuizService, QuizService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -88,7 +113,6 @@ app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGroup("/api/auth").MapIdentityApi<User>().WithTags("Authentication");
 app.MapControllers();
 
 app.Run();

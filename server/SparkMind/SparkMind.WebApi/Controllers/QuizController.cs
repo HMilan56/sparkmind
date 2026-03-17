@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SparkMind.WebApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/quiz")]
 public class QuizController(IQuizService quizService) : ControllerBase
@@ -17,7 +18,6 @@ public class QuizController(IQuizService quizService) : ControllerBase
     }
     
     [HttpGet("{quizId}")]
-    [Authorize]
     public async Task<IActionResult> GetQuizByIdAsync(int quizId)
     {
         var userId = GetCurrentUserId();
@@ -26,7 +26,6 @@ public class QuizController(IQuizService quizService) : ControllerBase
     }
 
     [HttpGet("library")]
-    [Authorize]
     public async Task<IActionResult> GetLibraryAsync()
     {
         var userId = GetCurrentUserId();
@@ -35,7 +34,6 @@ public class QuizController(IQuizService quizService) : ControllerBase
     }
 
     [HttpPost("create")]
-    [Authorize]
     public async Task<IActionResult> CreateQuizAsync()
     {
         var userId = GetCurrentUserId();
@@ -44,7 +42,6 @@ public class QuizController(IQuizService quizService) : ControllerBase
     }
 
     [HttpPut("update")]
-    [Authorize]
     public async Task<IActionResult> UpdateQuizAsync([FromBody] QuizDataDto quiz)
     {
         var userId = GetCurrentUserId();
@@ -52,8 +49,7 @@ public class QuizController(IQuizService quizService) : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete(("{quizId}"))]
-    [Authorize]
+    [HttpDelete("{quizId}")]
     public async Task<IActionResult> DeleteQuizAsync(int quizId)
     {
         var userId = GetCurrentUserId();
