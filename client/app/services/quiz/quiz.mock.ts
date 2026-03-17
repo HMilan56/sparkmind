@@ -1,4 +1,5 @@
-import type { IQuizService, QuizData, QuizHeader } from "./types";
+import { simulateFetch } from "~/utils/mock-utils";
+import type { IQuizService, QuizData, QuizHeader } from "./quiz.types";
 
 let mockData: QuizData[] = [
     {
@@ -41,12 +42,6 @@ for (let i = 0; i < 10; i++) {
     }
 }
 
-const getRandomNumber = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
-
-function simulateFetch(): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, getRandomNumber(0, 1500)));
-}
-
 function extractHeader(data: QuizData): QuizHeader {
     return {
         id: data.id,
@@ -55,13 +50,13 @@ function extractHeader(data: QuizData): QuizHeader {
     };
 }
 
-export const mockService: IQuizService = {
+export const quizMock: IQuizService = {
     getQuizById: async (id) => {
         await simulateFetch();
-        return mockData[0];
+        return mockData.find(quiz => quiz.id === id) || null;
     },
 
-    getUserLibrary: async (userId) => {
+    getUserLibrary: async () => {
         await simulateFetch();
         return mockData.map(extractHeader);
     },
@@ -71,7 +66,7 @@ export const mockService: IQuizService = {
         mockData = mockData.filter(data => data.id != quizId);
     },
 
-    createQuiz: async (userId) => {
+    createQuiz: async () => {
         await simulateFetch();
         let newQuiz: QuizData = {
             id: 1005 + mockData.length,
@@ -109,7 +104,7 @@ export const mockService: IQuizService = {
 
     saveQuiz: async (quizData) => {
         await simulateFetch();
-        let i = mockData.findIndex(quiz => quiz.id = quizData.id);
+        let i = mockData.findIndex(quiz => quiz.id === quizData.id);
         mockData.splice(i, 1, quizData);
     }
 }

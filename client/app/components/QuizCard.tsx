@@ -3,7 +3,7 @@ import { grey } from "@mui/material/colors";
 import BasicMenu from "./BasicMenu";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import type { QuizHeader } from "~/services/quiz-service/types";
+import type { QuizHeader } from "~/services/quiz/quiz.types";
 
 function truncateText(text: string, maxLength: number) {
     if (text.length <= maxLength) return text;

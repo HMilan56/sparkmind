@@ -1,11 +1,11 @@
 import { Grid, type AlertProps } from "@mui/material";
 import { QuizCard } from "./QuizCard";
-import type { QuizHeader } from "~/services/quiz-service/types";
+import type { QuizHeader } from "~/services/quiz/quiz.types";
 import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddQuizCard } from "./AddQuizCard";
 import { useSnackbar } from "~/contexts/SnackbarContext";
-import { quizService } from "~/services/quiz-service/service-factory";
+import { ServiceFactory } from "~/services/service-factory";
 
 export type QuizGridProps = {
     cardData: QuizHeader[];
@@ -16,6 +16,8 @@ type AlertState = {
     severity: AlertProps["severity"],
     open: boolean
 }
+
+const quizService = ServiceFactory.getQuizService();
 
 export function QuizGrid({ cardData }: QuizGridProps) {
     const navigate = useNavigate();
@@ -37,7 +39,7 @@ export function QuizGrid({ cardData }: QuizGridProps) {
     })
 
     const { mutate: createQuiz } = useMutation({
-        mutationFn: (userId: number) => quizService.createQuiz(userId),
+        mutationFn: (userId: number) => quizService.createQuiz(),
         onMutate: () => {
             showSnackbar("Creating quiz...", "info");
         },

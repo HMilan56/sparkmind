@@ -1,7 +1,7 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { QuestionEditor } from "./QuestionEditor";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import type { QuizData } from "~/services/quiz-service/types";
+import type { QuizData } from "~/services/quiz/quiz.types";
 
 export function Questions() {
     const { control } = useFormContext<QuizData>();

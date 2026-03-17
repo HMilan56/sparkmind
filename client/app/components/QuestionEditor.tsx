@@ -8,7 +8,7 @@ import { Button, Grid, Stack, TextField } from '@mui/material';
 import { Answer } from './Answer';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import type { QuizData } from '~/services/quiz-service/types';
+import type { QuizData } from '~/services/quiz/quiz.types';
 
 
 export type QuestionEditorProps = {

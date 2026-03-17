@@ -13,7 +13,7 @@ export default function SwitchWithLabel({ label, checked, onChange }: SwitchWith
             <FormGroup>
                 <FormControlLabel
                     control={
-                        <Switch checked={checked} onChange={onChange}/>
+                        <Switch checked={checked ?? false} onChange={onChange}/>
                     }
                     label={
                         <Typography fontWeight={600}>{label}</Typography>

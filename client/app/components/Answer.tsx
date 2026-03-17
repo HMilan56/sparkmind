@@ -1,7 +1,7 @@
 import { Checkbox, IconButton, Stack, TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import type { QuizData } from "~/services/quiz-service/types";
+import type { QuizData } from "~/services/quiz/quiz.types";
 
 export type AnswerProps = {
     questionIndex: number;

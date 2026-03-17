@@ -19,16 +19,16 @@ export function Details() {
                             control={control}
                             name="title"
                             render={({ field: { onChange, value } }) => (
-                                <TextField onChange={onChange} value={value} label="Title" fullWidth />
+                                <TextField onChange={onChange} value={value ?? ""} label="Title" fullWidth />
                             )} />
                         <Controller
                             control={control}
-                            name="description"
+                            name="desc"
                             render={({ field: { onChange, value } }) => (
                                 <TextField
                                     onChange={onChange}
                                     label="Description"
-                                    value={value}
+                                    value={value ?? ""}
                                     multiline
                                     rows={6}
                                     fullWidth

@@ -9,8 +9,10 @@ import { Questions } from "~/components/Questions";
 import { Settings } from "~/components/Settings";
 import { Topbar } from "~/components/Topbar";
 import { useSnackbar } from "~/contexts/SnackbarContext";
-import { quizService } from "~/services/quiz-service/service-factory";
-import type { QuizData } from "~/services/quiz-service/types";
+import type { QuizData } from "~/services/quiz/quiz.types";
+import { ServiceFactory } from "~/services/service-factory";
+
+const quizService = ServiceFactory.getQuizService();
 
 export default function Editor() {
     const { quizId: quizIdParam } = useParams();
@@ -77,7 +79,7 @@ function EditorLoading() {
     );
 }
 
-function EditorBody({ data }: { data: QuizData }) {
+function EditorBody({ data }: { data: QuizData | null }) {
     const methods = useForm<QuizData>();
 
     const { showSnackbar } = useSnackbar();
