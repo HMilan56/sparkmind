@@ -7,7 +7,7 @@ import { ServiceFactory } from "~/services/service-factory";
 
 const authService = ServiceFactory.getAuthService();
 
-export function Welcome() {
+export default function Host() {
     const loginForm = useForm<LoginRequest>({ defaultValues: { email: "", password: "" } });
     const registerForm = useForm<RegisterRequest>({ defaultValues: { username: "", email: "", password: "" } });
 

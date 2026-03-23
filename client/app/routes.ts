@@ -1,12 +1,20 @@
-import { type RouteConfig, index, layout, route } from "@react-router/dev/routes";
+import { type RouteConfig, index, layout, prefix, route } from "@react-router/dev/routes";
 
 export default [
-    layout("layouts/LandingLayout.tsx", [
-        index("pages/Home.tsx"),
+    index("pages/Home.tsx"),
+    
+    ...prefix("host", [
+        index("pages/Host.tsx"),
+        
+        layout("layouts/HostAuthLayout.tsx", [
+            route("library", "pages/Library.tsx"),
+            route("editor/:quizId", "pages/Editor.tsx"),
+
+            layout("layouts/HostSignalRLayout.tsx", [
+                route("lobby", "pages/Lobby.tsx")
+            ])
+        ]),
     ]),
-    layout("layouts/AuthLayout.tsx", [
-        route("library", "pages/Library.tsx"),
-        route("editor/:quizId", "pages/Editor.tsx"),
-        route("lobby", "pages/Lobby.tsx")
-    ])
+    
+    route("join", "pages/Join.tsx")
 ] satisfies RouteConfig;
