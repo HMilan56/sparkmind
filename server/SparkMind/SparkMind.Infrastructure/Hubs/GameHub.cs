@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SparkMind.Application.Extensions;
 using SparkMind.Application.Interfaces;
 
 namespace SparkMind.Infrastructure.Hubs;
 
+[Authorize]
 public class GameHub(ILobbyService lobbyService) : Hub
 {
     public async Task JoinLobby(string lobbyCode, string playerName)

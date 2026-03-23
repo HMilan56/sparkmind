@@ -6,6 +6,7 @@ export default [
     ]),
     layout("layouts/AuthLayout.tsx", [
         route("library", "pages/Library.tsx"),
-        route("editor/:quizId", "pages/Editor.tsx")
+        route("editor/:quizId", "pages/Editor.tsx"),
+        route("lobby", "pages/Lobby.tsx")
     ])
 ] satisfies RouteConfig;

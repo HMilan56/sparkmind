@@ -5,7 +5,7 @@ type SnackbarContextType = {
     showSnackbar: (message: string, severity?: AlertColor) => void;
 };
 
-const SnackbarContext = createContext<SnackbarContextType | undefined>(undefined);
+export const SnackbarContext = createContext<SnackbarContextType | undefined>(undefined);
 
 export function SnackbarProvider({ children }: { children: ReactNode }) {
     const [open, setOpen] = useState(false);
@@ -38,6 +38,9 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
 
 export const useSnackbar = () => {
     const context = useContext(SnackbarContext);
-    if (!context) throw new Error("useSnackbar must be used within a SnackbarProvider");
+    
+    if (!context)
+        throw new Error("useSnackbar must be used within a SnackbarProvider");
+    
     return context;
 };
