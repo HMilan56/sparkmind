@@ -11,6 +11,8 @@ using SparkMind.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using SparkMind.Infrastructure.Hubs;
+using SparkMind.Infrastructure.RealTime;
 using SparkMind.WebApi.ErrorHandler;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,12 +25,12 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:5173")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -82,13 +84,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-
+builder.Services.AddSignalR();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddSingleton<QuizMapper>();
 
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+builder.Services.AddSingleton<ILobbyRepository, LobbyRepository>();
+
+builder.Services.AddTransient<IGameNotificationService, SignalRNotificationService>();
+builder.Services.AddTransient<ILobbyService, LobbyService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -108,11 +114,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowSparkMindFrontend");
-
+app.UseRouting();
 app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<GameHub>("/game");
 app.MapControllers();
 
 app.Run();

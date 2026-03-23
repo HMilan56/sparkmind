@@ -17,7 +17,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\SparkMind.Application\SparkMind.Application.csproj" />
       <ProjectReference Include="..\SparkMind.Domain\SparkMind.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
 </Project>
