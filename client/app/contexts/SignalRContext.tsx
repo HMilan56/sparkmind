@@ -8,6 +8,8 @@ type SignalRContextType = {
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
+let globalConnection: signalR.HubConnection | null = null;
+
 export const SignalRContext = createContext<SignalRContextType | undefined>(undefined);
 
 export function SignalRProvider({ children }: { children: React.ReactNode }) {
@@ -15,31 +17,30 @@ export function SignalRProvider({ children }: { children: React.ReactNode }) {
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        const newConnection = new signalR.HubConnectionBuilder()
-            .withUrl(`${baseUrl}/game`, {
-                accessTokenFactory: () => localStorage.getItem("token") || ""
-            })
-            .withAutomaticReconnect()
-            .configureLogging(signalR.LogLevel.Information)
-            .build();
+        globalConnection ??= new signalR.HubConnectionBuilder()
+                .withUrl(`${baseUrl}/game`, {
+                    accessTokenFactory: () => localStorage.getItem("token") || ""
+                })
+                .withAutomaticReconnect()
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
 
-        setConnection(newConnection);
+        setConnection(globalConnection);
 
         const startConnection = async () => {
+            if (globalConnection?.state !== signalR.HubConnectionState.Disconnected)
+                return;
+
             try {
-                await newConnection.start();
+                await globalConnection.start();
                 console.log("SignalR connected");
                 setIsConnected(true);
-            } catch(err) {
+            } catch (err) {
                 console.error(`SignalR Connection Error: ${err}`);
             }
         }
 
         startConnection();
-
-        return () => {
-            newConnection.stop();
-        }
     }, []);
 
     const contextValue = useMemo<SignalRContextType>(() => ({
