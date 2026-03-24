@@ -2,10 +2,10 @@ import { type RouteConfig, index, layout, prefix, route } from "@react-router/de
 
 export default [
     index("pages/Home.tsx"),
-    
     ...prefix("host", [
-        index("pages/Host.tsx"),
-        
+        layout("layouts/HostGuestLayout.tsx", [
+            index("pages/Host.tsx")
+        ]),
         layout("layouts/HostAuthLayout.tsx", [
             route("library", "pages/Library.tsx"),
             route("editor/:quizId", "pages/Editor.tsx"),

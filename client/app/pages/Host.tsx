@@ -18,7 +18,7 @@ export default function Host() {
         snackbar.showSnackbar("Logging in...", "info");
         authService.login(data)
             .then(async _ => {
-                await navigate("/library");
+                await navigate("/host/library");
                 snackbar.showSnackbar("Successfully logged in", "success");
             })
             .catch(_ => snackbar.showSnackbar("Login attempt failed", "error"));

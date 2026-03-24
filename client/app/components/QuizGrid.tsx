@@ -49,7 +49,7 @@ export function QuizGrid({ cardData }: QuizGridProps) {
         onSuccess: async (newQuiz) => {
             queryClient.setQueryData(["quiz", newQuiz.id], newQuiz);
             queryClient.invalidateQueries({queryKey: ["userLibrary"]})
-            await navigate(`/editor/${newQuiz.id}`);
+            await navigate(`/host/editor/${newQuiz.id}`);
             showSnackbar("Successfully created quiz.", "success");
         }
     });
@@ -73,7 +73,7 @@ export function QuizGrid({ cardData }: QuizGridProps) {
                     >
                         <QuizCard
                             data={header}
-                            onEdit={() => void navigate(`/editor/${header.id}`)}
+                            onEdit={() => void navigate(`/host/editor/${header.id}`)}
                             onDelete={() => deleteQuiz(header.id)}
                         />
                     </Grid>
