@@ -5,7 +5,6 @@ using SparkMind.Application.Interfaces;
 
 namespace SparkMind.Infrastructure.Hubs;
 
-[Authorize]
 public class GameHub(ILobbyService lobbyService) : Hub
 {
     public async Task JoinLobby(string lobbyCode, string playerName)
@@ -15,6 +14,7 @@ public class GameHub(ILobbyService lobbyService) : Hub
         await lobbyService.AddPlayerToLobby(lobbyCode, playerName, Context.ConnectionId);
     }
     
+    [Authorize]
     public async Task<string> CreateLobby()
     {
         if (Context.User == null) 
