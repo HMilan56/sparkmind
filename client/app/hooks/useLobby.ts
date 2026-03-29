@@ -5,21 +5,24 @@ export function useLobby() {
     const [players, setPlayers] = useState<string[]>([]);
     const [code, setCode] = useState<string>("");
 
-    const { connection, isConnected } = useSignalR();
+    const { gameService, isConnected } = useSignalR();
 
     useEffect(() => {
-        if (!isConnected || !connection) return;
+        if (!isConnected) return;
 
-        connection.invoke<string>("CreateLobby")
-            .then(code => setCode(code))
-            .catch(err => console.error("Lobby error:", err));
+        const createLobby = async() => {
+            const code = await gameService.createLobby();
+            setCode(code);
+        }
 
-        connection.on("PlayerJoined", (playerName: string) => {
+        createLobby();
+
+        const unsubscribe = gameService.onPlayerJoined(playerName => {
             setPlayers(prev => [...prev, playerName]);
         });
 
-        return () => { connection.off("PlayerJoined"); };
-    }, [isConnected, connection]);
+        return () => unsubscribe();
+    }, [isConnected]);
     
     const startGame = async () => {
         console.log("Lobby: starting game");

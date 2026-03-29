@@ -1,63 +1,45 @@
-import * as signalR from '@microsoft/signalr';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { GameService } from '~/services/game/game.service';
 
 type SignalRContextType = {
-    connection: signalR.HubConnection | null;
-    isConnected: boolean
+    isConnected: boolean;
+    gameService: GameService;
 };
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-let globalConnection: signalR.HubConnection | null = null;
-
 export const SignalRContext = createContext<SignalRContextType | undefined>(undefined);
 
 export function SignalRProvider({ children }: { children: React.ReactNode }) {
-    const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [isConnected, setIsConnected] = useState(false);
 
+    const gameService = GameService.getInstance(import.meta.env.VITE_API_BASE_URL);
+
     useEffect(() => {
-        globalConnection ??= new signalR.HubConnectionBuilder()
-                .withUrl(`${baseUrl}/game`, {
-                    accessTokenFactory: () => localStorage.getItem("token") || ""
-                })
-                .withAutomaticReconnect()
-                .configureLogging(signalR.LogLevel.Information)
-                .build();
-
-        setConnection(globalConnection);
-
-        const startConnection = async () => {
-            if (globalConnection?.state !== signalR.HubConnectionState.Disconnected)
-                return;
-
+        const init = async () => {
             try {
-                await globalConnection.start();
-                console.log("SignalR connected");
-                setIsConnected(true);
+                await gameService.start();
+                gameService.onConnectionStateChange(setIsConnected);
             } catch (err) {
-                console.error(`SignalR Connection Error: ${err}`);
+                console.error(err);
             }
-        }
+        };
 
-        startConnection();
+        init();
     }, []);
 
-    const contextValue = useMemo<SignalRContextType>(() => ({
-        connection,
-        isConnected
-    }), [connection, isConnected]);
+    const value = useMemo(() => ({ isConnected, gameService }), [isConnected, gameService]);
 
-    return <SignalRContext.Provider value={contextValue}>
-        {children}
-    </SignalRContext.Provider>
+    return (
+        <SignalRContext.Provider value={value}>
+            {children}
+        </SignalRContext.Provider>
+    );
 }
 
 export function useSignalR() {
     const context = useContext(SignalRContext);
-
     if (context === undefined)
         throw new Error("useSignalR must be used within a SignalRProvider");
-
     return context;
 }

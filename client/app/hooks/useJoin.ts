@@ -1,12 +1,12 @@
 import { useSignalR } from "~/contexts/SignalRContext";
 
 export function useJoin() {
-    const { connection, isConnected } = useSignalR();
+    const { gameService, isConnected } = useSignalR();
 
     const joinLobby = async (lobbyCode: string, nickName: string) => {
-         if (!isConnected || !connection) return;
+         if (!isConnected) return;
 
-        connection.invoke("JoinLobby", lobbyCode, nickName);
+        gameService.joinLobby(lobbyCode, nickName);
     };
 
     return joinLobby;

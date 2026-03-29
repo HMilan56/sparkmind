@@ -19,6 +19,11 @@ public class LobbyRepository : ILobbyRepository
         return lobby;
     }
 
+    public Lobby? GetByHostId(int hostId)
+    {
+        return _lobbies.Values.FirstOrDefault(lobby => lobby.Host.User.Id == hostId);
+    }
+
     public void Delete(string code) 
     {
         _lobbies.TryRemove(code, out _);

@@ -19,16 +19,20 @@ public class LobbyService(IGameNotificationService notifier, ILobbyRepository lo
             await notifier.NotifyHostPlayerJoined(code, name);
     }
     
-    public async Task<string> CreateNewLobby(int userId, string connectionId)
+    public async Task<string> CreateOrGetLobby(int userId, string connectionId)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());
         if (user == null)
             throw new UnauthorizedAccessException("User not found");
         
+        var lobby = lobbyRepository.GetByHostId(userId);
+        if (lobby != null)
+            return lobby.LobbyCode;
+        
         var host = new Host(user, connectionId);
         var code = Guid.NewGuid().ToString()[..5].ToUpper();
         
-        var lobby = new Lobby(host, code);
+        lobby = new Lobby(host, code);
         Console.WriteLine($"Created new lobby hosted by {host.User.UserName}, connect with code: {code}");
     
         lobbyRepository.Save(lobby);
