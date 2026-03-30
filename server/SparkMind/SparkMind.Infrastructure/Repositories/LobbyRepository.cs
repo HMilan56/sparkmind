@@ -6,26 +6,30 @@ namespace SparkMind.Infrastructure.Repositories;
 
 public class LobbyRepository : ILobbyRepository
 {
-    private readonly ConcurrentDictionary<string, Lobby> _lobbies = new();
+    private readonly ConcurrentDictionary<string, Lobby> _lobbiesByCode = new();
+    private readonly ConcurrentDictionary<int, Lobby> _lobbiesByHost = new();
 
     public void Save(Lobby lobby) 
     {
-        _lobbies[lobby.LobbyCode] = lobby;
+        _lobbiesByCode[lobby.LobbyCode] = lobby;
+        _lobbiesByHost[lobby.Host.UserId] = lobby; 
     }
 
     public Lobby? GetByCode(string code) 
     {
-        _lobbies.TryGetValue(code, out var lobby);
+        _lobbiesByCode.TryGetValue(code, out var lobby);
         return lobby;
     }
 
-    public Lobby? GetByHostId(int hostId)
+    public Lobby? GetByHost(int userId)
     {
-        return _lobbies.Values.FirstOrDefault(lobby => lobby.Host.User.Id == hostId);
+        _lobbiesByHost.TryGetValue(userId, out var lobby);
+        return lobby;
     }
 
-    public void Delete(string code) 
+    public void Delete(Lobby lobby) 
     {
-        _lobbies.TryRemove(code, out _);
+        _lobbiesByCode.TryRemove(lobby.LobbyCode, out _);
+        _lobbiesByHost.TryRemove(lobby.Host.UserId, out _);
     }
 }

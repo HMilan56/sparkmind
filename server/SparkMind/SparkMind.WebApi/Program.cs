@@ -108,6 +108,7 @@ builder.Services.AddSingleton<QuizMapper>();
 
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 builder.Services.AddSingleton<ILobbyRepository, LobbyRepository>();
+builder.Services.AddSingleton<IConnectionRepository, ConnectionRepository>();
 
 builder.Services.AddTransient<IGameNotificationService, SignalRNotificationService>();
 builder.Services.AddTransient<ILobbyService, LobbyService>();

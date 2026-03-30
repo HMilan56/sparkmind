@@ -5,18 +5,23 @@ using SparkMind.Domain.Models;
 
 namespace SparkMind.Application.Services;
 
-public class LobbyService(IGameNotificationService notifier, ILobbyRepository lobbyRepository, UserManager<User> userManager) : ILobbyService
+public class LobbyService(
+    IGameNotificationService notifier,
+    ILobbyRepository lobbyRepository,
+    IConnectionRepository connectionRepository,
+    UserManager<User> userManager) : ILobbyService
 {
     public async Task AddPlayerToLobby(string code, string name, string connectionId)
     {
         var lobby = lobbyRepository.GetByCode(code);
-        if (lobby == null)
-            return;
-            
-        var player = new Player { Name = name, ConnectionId = connectionId };
-
-        if (lobby.TryAddPlayer(player))
+        var player = lobby?.TryAddPlayer(name);
+        
+        if (player != null)
+        {
+            connectionRepository.AddPlayer(connectionId, player.Id, code);
             await notifier.NotifyHostPlayerJoined(code, name);
+        }
+        
     }
     
     public async Task<string> CreateOrGetLobby(int userId, string connectionId)
@@ -25,17 +30,16 @@ public class LobbyService(IGameNotificationService notifier, ILobbyRepository lo
         if (user == null)
             throw new UnauthorizedAccessException("User not found");
         
-        var lobby = lobbyRepository.GetByHostId(userId);
+        var lobby = lobbyRepository.GetByHost(user.Id);
         if (lobby != null)
             return lobby.LobbyCode;
         
-        var host = new Host(user, connectionId);
-        var code = Guid.NewGuid().ToString()[..5].ToUpper();
-        
-        lobby = new Lobby(host, code);
-        Console.WriteLine($"Created new lobby hosted by {host.User.UserName}, connect with code: {code}");
-    
+        lobby = new Lobby(userId);
         lobbyRepository.Save(lobby);
-        return code;
+        connectionRepository.AddHost(connectionId, userId, lobby.LobbyCode);
+        
+        Console.WriteLine($"Created new lobby hosted by {user.UserName}, connect with code: {lobby.LobbyCode}");
+    
+        return lobby.LobbyCode;
     }
 }

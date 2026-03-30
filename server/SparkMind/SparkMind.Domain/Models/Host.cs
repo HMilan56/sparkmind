@@ -1,7 +1,7 @@
 namespace SparkMind.Domain.Models;
 
-public class Host(User user, string connectionId)
+public class Host
 {
-    public User User { get; init; } = user;
-    public string ConnectionId { get; set; } = connectionId;
+    public int UserId { get; set; }
+    public Lobby? lobby { get; set; }
 }

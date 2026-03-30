@@ -1,23 +1,25 @@
 namespace SparkMind.Domain.Models;
 
-public class Lobby(Host host, string lobbyCode)
+public class Lobby(int userId)
 {
     private readonly List<Player> _players = [];
     private GameSession _gameSession = new GameSession();
-    public string LobbyCode { get; set; } = lobbyCode;
+    public string LobbyCode { get; set; } = Guid.NewGuid().ToString()[..5].ToUpper();
     
-    public Host Host { get; set; } = host;
+    public Host Host { get; set; } = new Host { UserId = userId };
 
     private bool IsPlayerNameTaken(string playerName) =>
         _players.Any(p => string.Equals(p.Name, playerName, StringComparison.CurrentCultureIgnoreCase));
 
-    public bool TryAddPlayer(Player player)
+    public Player? TryAddPlayer(string name)
     {
-        if (IsPlayerNameTaken(player.Name))
-            return false;
+        if (IsPlayerNameTaken(name))
+            return null;
 
+        var player = new Player { Name = name };
         _players.Add(player);
-        return true;
+        
+        return player;
     }
 
     public void RemovePlayer(Player player)
