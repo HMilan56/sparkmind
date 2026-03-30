@@ -11,14 +11,14 @@ public class LobbyService(
     IConnectionRepository connectionRepository,
     UserManager<User> userManager) : ILobbyService
 {
-    public async Task AddPlayerToLobby(string code, string name, string connectionId)
+    public async Task JoinLobby(string code, string name, string connectionId)
     {
         var lobby = lobbyRepository.GetByCode(code);
-        var player = lobby?.TryAddPlayer(name);
+        var player = lobby?.AddOrGetPlayer(name);
         
         if (player != null)
         {
-            connectionRepository.AddPlayer(connectionId, player.Id, code);
+            connectionRepository.AddPlayer(connectionId, player);
             await notifier.NotifyHostPlayerJoined(code, name);
         }
         
@@ -32,14 +32,23 @@ public class LobbyService(
         
         var lobby = lobbyRepository.GetByHost(user.Id);
         if (lobby != null)
-            return lobby.LobbyCode;
+            return lobby.Code;
         
         lobby = new Lobby(userId);
         lobbyRepository.Save(lobby);
-        connectionRepository.AddHost(connectionId, userId, lobby.LobbyCode);
+        connectionRepository.AddHost(connectionId, lobby.Host);
         
-        Console.WriteLine($"Created new lobby hosted by {user.UserName}, connect with code: {lobby.LobbyCode}");
+        Console.WriteLine($"Created new lobby hosted by {user.UserName}, connect with code: {lobby.Code}");
     
-        return lobby.LobbyCode;
+        return lobby.Code;
+    }
+
+    public async Task Disconnect(string connectionId)
+    {
+        var player = connectionRepository.GetPlayerByConnectionId(connectionId);
+        if (player != null)
+        {
+            await notifier.NotifyHostPlayerLeft(player.Lobby.Code, player.Name);
+        }
     }
 }

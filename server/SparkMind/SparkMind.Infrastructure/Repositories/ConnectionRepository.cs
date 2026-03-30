@@ -7,41 +7,58 @@ namespace SparkMind.Infrastructure.Repositories;
 
 public class ConnectionRepository : IConnectionRepository
 {
-    private readonly ConcurrentDictionary<string, string> _players = new();
-    private readonly ConcurrentDictionary<int, string> _hosts = new();
+    private readonly ConcurrentDictionary<string, string> _playerToConn = new();
+    private readonly ConcurrentDictionary<string, Player> _connToPlayer = new();
+    
+    private readonly ConcurrentDictionary<int, string> _hostToConn = new();
+    private readonly ConcurrentDictionary<string, Host> _connToHost = new();
 
-    private void RemoveByValue<T1, T2>(T2 value, ConcurrentDictionary<T1, T2> dictionary)
-        where T1 : notnull
+    public void AddHost(string connectionId, Host host)
     {
-        var keysToRemove = dictionary
-            .Where(pair => pair.Value != null && pair.Value.Equals(value))
-            .Select(pair => pair.Key);
-        
-        foreach (var key in keysToRemove)
-        {
-            dictionary.TryRemove(key, out _);
-        }
+        _hostToConn.TryAdd(host.UserId, connectionId);
+        _connToHost.TryAdd(connectionId, host);
     }
-    
-    public void AddHost(string connectionId, int userId, string lobbyCode)
-        => _hosts.TryAdd(userId, connectionId);
 
-    public void AddPlayer(string connectionId, string playerId, string lobbyCode)
-        => _players.TryAdd(playerId, connectionId);
-
-    public void RemoveHost(string connectionId) => RemoveByValue(connectionId, _hosts);
-    
-    public void RemovePlayer(string connectionId) => RemoveByValue(connectionId, _players);
-
-    public string? GetHostConnectionId(int userId)
+    public void AddPlayer(string connectionId, Player player)
     {
-        var result = _hosts.TryGetValue(userId, out var data);
+        _playerToConn.TryAdd(player.Id, connectionId);
+        _connToPlayer.TryAdd(connectionId, player);
+    }
+
+    public void RemoveHost(string connectionId)
+    {
+        _connToHost.TryRemove(connectionId, out var host);
+        _hostToConn.TryRemove(host.UserId, out var _);
+    }
+
+    public void RemovePlayer(string connectionId)
+    {
+        _connToPlayer.TryRemove(connectionId, out var player);
+        if (player != null)
+            _playerToConn.TryRemove(player.Id, out var _);
+    }
+
+    public string? GetConnectionIdByHost(int userId)
+    {
+        var result = _hostToConn.TryGetValue(userId, out var data);
         return result ? data : null;
     }
 
-    public string? GetPlayerConnectionId(string playerId)
+    public string? GetConnectionIdByPlayer(string playerId)
     {
-        var result = _players.TryGetValue(playerId, out var data);
+        var result = _playerToConn.TryGetValue(playerId, out var data);
+        return result ? data : null;
+    }
+
+    public Host? GetHostByConnectionId(string connectionId)
+    {
+        var result = _connToHost.TryGetValue(connectionId, out var data);
+        return result ? data : null;
+    }
+
+    public Player? GetPlayerByConnectionId(string connectionId)
+    {
+        var result = _connToPlayer.TryGetValue(connectionId, out var data);
         return result ? data : null;
     }
 }

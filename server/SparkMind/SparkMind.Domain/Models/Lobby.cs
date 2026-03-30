@@ -4,19 +4,18 @@ public class Lobby(int userId)
 {
     private readonly List<Player> _players = [];
     private GameSession _gameSession = new GameSession();
-    public string LobbyCode { get; set; } = Guid.NewGuid().ToString()[..5].ToUpper();
+    public string Code { get; set; } = Guid.NewGuid().ToString()[..5].ToUpper();
     
     public Host Host { get; set; } = new Host { UserId = userId };
 
-    private bool IsPlayerNameTaken(string playerName) =>
-        _players.Any(p => string.Equals(p.Name, playerName, StringComparison.CurrentCultureIgnoreCase));
 
-    public Player? TryAddPlayer(string name)
+    public Player AddOrGetPlayer(string name)
     {
-        if (IsPlayerNameTaken(name))
-            return null;
-
-        var player = new Player { Name = name };
+        var player = _players.FirstOrDefault(p => p.Name == name);
+        if (player != null)
+            return player;
+        
+        player = new Player { Name = name, Lobby = this};
         _players.Add(player);
         
         return player;

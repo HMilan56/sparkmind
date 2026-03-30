@@ -10,8 +10,7 @@ public class GameHub(ILobbyService lobbyService) : Hub
     public async Task JoinLobby(string lobbyCode, string playerName)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, lobbyCode);
-
-        await lobbyService.AddPlayerToLobby(lobbyCode, playerName, Context.ConnectionId);
+        await lobbyService.JoinLobby(lobbyCode, playerName, Context.ConnectionId);
     }
     
     [Authorize]
@@ -25,5 +24,11 @@ public class GameHub(ILobbyService lobbyService) : Hub
 
         await Groups.AddToGroupAsync(Context.ConnectionId, lobbyCode);
         return lobbyCode;
+    }
+
+    public override Task OnDisconnectedAsync(Exception? exception)
+    {
+        lobbyService.Disconnect(Context.ConnectionId);
+        return base.OnDisconnectedAsync(exception);
     }
 }

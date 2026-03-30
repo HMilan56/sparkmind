@@ -10,4 +10,9 @@ public class SignalRNotificationService(IHubContext<GameHub> hubContext) : IGame
     {
         await hubContext.Clients.Group(lobbyCode).SendAsync("PlayerJoined", playerName);
     }
+
+    public async Task NotifyHostPlayerLeft(string lobbyCode, string playerName)
+    {
+        await hubContext.Clients.Group(lobbyCode).SendAsync("PlayerLeft", playerName);
+    }
 }

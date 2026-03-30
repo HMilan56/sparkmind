@@ -11,7 +11,7 @@ public class LobbyRepository : ILobbyRepository
 
     public void Save(Lobby lobby) 
     {
-        _lobbiesByCode[lobby.LobbyCode] = lobby;
+        _lobbiesByCode[lobby.Code] = lobby;
         _lobbiesByHost[lobby.Host.UserId] = lobby; 
     }
 
@@ -29,7 +29,7 @@ public class LobbyRepository : ILobbyRepository
 
     public void Delete(Lobby lobby) 
     {
-        _lobbiesByCode.TryRemove(lobby.LobbyCode, out _);
+        _lobbiesByCode.TryRemove(lobby.Code, out _);
         _lobbiesByHost.TryRemove(lobby.Host.UserId, out _);
     }
 }
