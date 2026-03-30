@@ -14,12 +14,17 @@ public class GameLoopService(
         using PeriodicTimer timer = new(TimeSpan.FromSeconds(1));
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {
-            foreach (var lobby in await lobbyService.GetActiveLobbies())
+            await TickAsync();
+        }
+    }
+
+    public async Task TickAsync()
+    {
+        foreach (var lobby in await lobbyService.GetActiveLobbies())
+        {
+            if (lobby.StateMachine.AutoAdvanceTimestamp <= DateTimeOffset.UtcNow)
             {
-                if (lobby.StateMachine.AutoAdvanceTimestamp <= DateTimeOffset.UtcNow)
-                {
-                    lobby.StateMachine.Advance();
-                }
+                lobby.StateMachine.Advance();
             }
         }
     }

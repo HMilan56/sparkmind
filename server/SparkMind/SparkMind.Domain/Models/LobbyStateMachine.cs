@@ -26,6 +26,7 @@ public class LobbyStateMachine(Func<bool> isGameOver)
         {
             case LobbyState.WaitingForStart:
                 State = LobbyState.QuestionPreview;
+                AutoAdvanceTimestamp = DateTimeOffset.UtcNow.AddSeconds(3);
                 break;
             
             case LobbyState.QuestionPreview:
@@ -39,7 +40,7 @@ public class LobbyStateMachine(Func<bool> isGameOver)
                 break;
 
             case LobbyState.QuestionFinished:
-                State = isGameOver() ? LobbyState.GameOver : LobbyState.QuestionActive;
+                State = isGameOver() ? LobbyState.GameOver : LobbyState.QuestionPreview;
                 break;
             
             case LobbyState.GameOver:

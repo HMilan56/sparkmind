@@ -3,7 +3,7 @@ namespace SparkMind.Domain.Models;
 public class Lobby
 {
     public List<Player> Players { get; set; } = [];
-    public int QuestionIndex { get; set; } = 0;
+    public int QuestionIndex { get; set; } = -1;
     public Question CurrentQuestion => Quiz.Questions[QuestionIndex];
     public string Code { get; } = Guid.NewGuid().ToString()[..5].ToUpper();
     public Host Host { get; }
@@ -19,15 +19,14 @@ public class Lobby
         StateMachine.OnStateChanged += OnStateChanged;
     }
 
-    private bool IsGameOver() => QuestionIndex >= Quiz.Questions.Count;
+    private bool IsGameOver() => QuestionIndex >= Quiz.Questions.Count - 1;
 
     public void OnStateChanged()
     {
         switch (StateMachine.State)
         {
-            case LobbyState.WaitingForStart:
-                break;
             case LobbyState.QuestionPreview:
+                QuestionIndex++;
                 break;
             case LobbyState.QuestionActive:
                 break;
