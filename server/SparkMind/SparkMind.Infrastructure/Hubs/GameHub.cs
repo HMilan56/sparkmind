@@ -14,13 +14,13 @@ public class GameHub(ILobbyService lobbyService) : Hub
     }
     
     [Authorize]
-    public async Task<string> CreateOrGetLobby()
+    public async Task<string> CreateOrGetLobby(int quizId)
     {
         if (Context.User == null) 
             throw new UnauthorizedAccessException("You need to be logged in to create a lobby!");
         
         var hostId = Context.User.GetUserId();
-        var lobbyCode = await lobbyService.CreateOrGetLobby(hostId, Context.ConnectionId);
+        var lobbyCode = await lobbyService.CreateOrGetLobby(hostId, Context.ConnectionId, quizId);
 
         await Groups.AddToGroupAsync(Context.ConnectionId, lobbyCode);
         return lobbyCode;

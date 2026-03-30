@@ -10,6 +10,7 @@ public class QuizRepository(AppDbContext context) : IQuizRepository
     public async Task<Quiz?> GetByIdAsync(int id)
     {
         return await context.Quizzes
+            .AsNoTracking()
             .Include(q => q.Questions)
             .ThenInclude(ques => ques.Answers)
             .Include(q => q.Author)
