@@ -23,6 +23,7 @@
     <ItemGroup>
       <ProjectReference Include="..\SparkMind.Application\SparkMind.Application.csproj" />
       <ProjectReference Include="..\SparkMind.Domain\SparkMind.Domain.csproj" />
+      <ProjectReference Include="..\SparkMind.Infrastructure\SparkMind.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,68 +1,69 @@
+using SparkMind.Domain.Interfaces;
+
 namespace SparkMind.Domain.Models;
 
 public class Lobby
 {
-    public List<Player> Players { get; set; } = [];
+    private List<Player> _players = [];
+    public IReadOnlyList<IPlayer> Players => _players;
     public int QuestionIndex { get; set; } = -1;
     public Question CurrentQuestion => Quiz.Questions[QuestionIndex];
     public string Code { get; } = Guid.NewGuid().ToString()[..5].ToUpper();
     public Host Host { get; }
     public Quiz Quiz { get; }
     public LobbyStateMachine StateMachine { get; }
-    public event Action? NotifyStateChanged;
 
     public Lobby(int userId, Quiz quiz)
     {
         Host = new Host { UserId = userId };
         Quiz = quiz;
         StateMachine = new LobbyStateMachine(IsGameOver);
-        StateMachine.OnStateChanged += OnStateChanged;
     }
 
     private bool IsGameOver() => QuestionIndex >= Quiz.Questions.Count - 1;
 
-    public void OnStateChanged()
+    public void OnStateChanged(LobbyState oldState, LobbyState newState)
     {
-        switch (StateMachine.State)
-        {
-            case LobbyState.QuestionPreview:
-                QuestionIndex++;
-                break;
-            case LobbyState.QuestionActive:
-                break;
-            case LobbyState.QuestionFinished:
-                break;
-            case LobbyState.GameOver:
-                break;
-        }
-        
-        NotifyStateChanged?.Invoke();
+        if (newState == LobbyState.QuestionPreview)
+            QuestionIndex++;
     }
 
-    public Player AddOrGetPlayer(string name)
+    public IPlayer AddOrGetPlayer(string name)
     {
         var player = Players.FirstOrDefault(p => p.Name == name);
         if (player != null)
             return player;
         
-        player = new Player { Name = name, Lobby = this};
-        Players.Add(player);
+        var newPlayer = new Player { Name = name, Lobby = this};
+        _players.Add(newPlayer);
         
-        return player;
+        return newPlayer;
     }
 
-    public void RemovePlayer(Player player)
+    public void RemovePlayer(IPlayer player)
     {
-        Players.Remove(player);
+        _players.RemoveAll(p => p.Name == player.Name);
+    }
+
+    public void SubmitAnswer(IPlayer player, string answer)
+    {
+        var p = _players.FirstOrDefault(p => p.Name == answer);
     }
 
     public void RequestNextStep()
     {
-        StateMachine.Advance();
+        var (oldState, newState) = StateMachine.Advance();
+        
+        if (oldState == newState)
+            return;
+        
+        if (newState == LobbyState.QuestionPreview)
+            QuestionIndex++;
     }
 
     public Dictionary<string, int> GetAnswerStatistics()
     {
-        return Players.GroupBy(p => p.SubmittedAnswer).ToDictionary(g => g.Key, g => g.Count());
+        return _players.GroupBy(p => p.SubmittedAnswer)
+            .ToDictionary(g => g.Key, g => g.Count());
     }
 }

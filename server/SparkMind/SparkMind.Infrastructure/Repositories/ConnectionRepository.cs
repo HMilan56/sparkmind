@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using SparkMind.Application.Interfaces;
+using SparkMind.Domain.Interfaces;
 using SparkMind.Domain.Models;
 
 namespace SparkMind.Infrastructure.Repositories;
@@ -8,7 +9,7 @@ namespace SparkMind.Infrastructure.Repositories;
 public class ConnectionRepository : IConnectionRepository
 {
     private readonly ConcurrentDictionary<string, string> _playerToConn = new();
-    private readonly ConcurrentDictionary<string, Player> _connToPlayer = new();
+    private readonly ConcurrentDictionary<string, IPlayer> _connToPlayer = new();
     
     private readonly ConcurrentDictionary<int, string> _hostToConn = new();
     private readonly ConcurrentDictionary<string, Host> _connToHost = new();
@@ -19,7 +20,7 @@ public class ConnectionRepository : IConnectionRepository
         _connToHost.TryAdd(connectionId, host);
     }
 
-    public void AddPlayer(string connectionId, Player player)
+    public void AddPlayer(string connectionId, IPlayer player)
     {
         _playerToConn.TryAdd(player.Id, connectionId);
         _connToPlayer.TryAdd(connectionId, player);
@@ -56,7 +57,7 @@ public class ConnectionRepository : IConnectionRepository
         return result ? data : null;
     }
 
-    public Player? GetPlayerByConnectionId(string connectionId)
+    public IPlayer? GetPlayerByConnectionId(string connectionId)
     {
         var result = _connToPlayer.TryGetValue(connectionId, out var data);
         return result ? data : null;

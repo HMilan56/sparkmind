@@ -9,4 +9,5 @@ public interface ILobbyRepository
     public void Delete(Lobby lobby);
     public Lobby? GetByCode(string code);
     public Lobby? GetByHost(int userId);
+    public IEnumerable<Lobby> GetActiveLobbies();
 }

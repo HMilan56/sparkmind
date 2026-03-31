@@ -14,8 +14,6 @@ public class LobbyService(
     UserManager<User> userManager
 ) : ILobbyService
 {
-    private readonly List<Lobby> _activeLobbies = [];
-
     public async Task JoinLobby(string code, string name, string connectionId)
     {
         var lobby = lobbyRepository.GetByCode(code);
@@ -43,38 +41,6 @@ public class LobbyService(
             throw new ArgumentException("Quiz not found");
 
         lobby = new Lobby(userId, quiz);
-        lobby.NotifyStateChanged += () =>
-        {
-            var state = lobby.StateMachine.State;
-            var deadline = lobby.StateMachine.AutoAdvanceTimestamp;
-            
-            if (state == LobbyState.GameOver)
-                _activeLobbies.Remove(lobby);
-            
-            object payload = state switch
-            {
-                LobbyState.QuestionPreview => new QuestionPreviewDto(
-                    lobby.QuestionIndex + 1,
-                    lobby.CurrentQuestion.Text
-                ),
-                LobbyState.QuestionActive => new QuestionActiveDto(
-                    lobby.CurrentQuestion.Text,
-                    lobby.CurrentQuestion.Answers.Select(answer => new AnswerOptionDto(answer.Id, answer.Text)).ToList()
-                ),
-                LobbyState.QuestionFinished => new QuestionFinishedDto(
-                    lobby.CurrentQuestion.Answers.First(answer => answer.IsCorrect).Text,
-                    lobby.GetAnswerStatistics()
-                ),
-                _ => new { Message = "Transitioning..." }
-            };
-            
-            notifier.NotifyStateUpdated(lobby.Code, new
-            {
-                State = state,
-                Deadline = deadline,
-                Payload = payload
-            });
-        };
 
         lobbyRepository.Save(lobby);
         connectionRepository.AddHost(connectionId, lobby.Host);
@@ -89,9 +55,6 @@ public class LobbyService(
         var lobby = lobbyRepository.GetByHost(userId);
         if (lobby == null)
             throw new Exception($"Cannot find lobby owned by user id: {userId}");
-
-        if (lobby.StateMachine.State == LobbyState.WaitingForStart)
-            _activeLobbies.Add(lobby);
         
         lobby.RequestNextStep();
 
@@ -103,8 +66,10 @@ public class LobbyService(
         var player = connectionRepository.GetPlayerByConnectionId(connectionId);
         if (player == null)
             throw new Exception($"Cannot find player by connection id: {connectionId}");
+
+        var lobby = player.Lobby;
+        lobby.SubmitAnswer(player, answer);
         
-        player.SubmittedAnswer = answer;
         await notifier.NotifyAnswerSubmitted(player.Lobby.Code, player.Name);
     }
 
@@ -115,10 +80,5 @@ public class LobbyService(
         {
             await notifier.NotifyHostPlayerLeft(player.Lobby.Code, player.Name);
         }
-    }
-
-    public Task<IEnumerable<Lobby>> GetActiveLobbies()
-    {
-        return Task.FromResult<IEnumerable<Lobby>>(_activeLobbies);
     }
 }

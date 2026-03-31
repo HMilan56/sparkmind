@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SparkMind.Application.Factories;
 using SparkMind.Application.Interfaces;
+using SparkMind.Domain.Interfaces;
 using SparkMind.Domain.Models;
 
 namespace SparkMind.Application.Services;
 
-public class GameLoopService(
-    ILobbyService lobbyService
-    ) : BackgroundService
+public class GameLoopService(IServiceScopeFactory scopeFactory) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -20,12 +21,32 @@ public class GameLoopService(
 
     public async Task TickAsync()
     {
-        foreach (var lobby in await lobbyService.GetActiveLobbies())
+        using var scope = scopeFactory.CreateScope();
+
+        var lobbyRepository = scope.ServiceProvider.GetRequiredService<ILobbyRepository>();
+        var notifier = scope.ServiceProvider.GetRequiredService<IGameNotificationService>();
+
+        foreach (var lobby in lobbyRepository.GetActiveLobbies())
         {
-            if (lobby.StateMachine.AutoAdvanceTimestamp <= DateTimeOffset.UtcNow)
-            {
-                lobby.StateMachine.Advance();
-            }
+            var sm = lobby.StateMachine;
+
+            if (DateTimeOffset.UtcNow < sm.AutoAdvanceTimestamp)
+                continue;
+
+            lobby.RequestNextStep();
+            await BroadcastLobbyUpdate(lobby, notifier);
         }
+    }
+
+    private async Task BroadcastLobbyUpdate(Lobby lobby, IGameNotificationService notifier)
+    {
+        var payload = LobbyMessageFactory.CreatePayload(lobby);
+
+        await notifier.NotifyStateUpdated(lobby.Code, new
+        {
+            State = lobby.StateMachine.State,
+            Deadline = lobby.StateMachine.AutoAdvanceTimestamp,
+            Payload = payload
+        });
     }
 }

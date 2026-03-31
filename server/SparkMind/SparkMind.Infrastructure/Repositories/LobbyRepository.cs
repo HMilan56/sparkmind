@@ -17,14 +17,21 @@ public class LobbyRepository : ILobbyRepository
 
     public Lobby? GetByCode(string code) 
     {
-        _lobbiesByCode.TryGetValue(code, out var lobby);
-        return lobby;
+        return _lobbiesByCode.GetValueOrDefault(code);
     }
 
     public Lobby? GetByHost(int userId)
     {
-        _lobbiesByHost.TryGetValue(userId, out var lobby);
-        return lobby;
+        return _lobbiesByHost.GetValueOrDefault(userId);
+    }
+
+    public IEnumerable<Lobby> GetActiveLobbies()
+    {
+        return _lobbiesByHost.Values.Where(lobby =>
+        {
+            var state = lobby.StateMachine.State;
+            return state != LobbyState.WaitingForStart && state != LobbyState.GameOver;
+        });
     }
 
     public void Delete(Lobby lobby) 

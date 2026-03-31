@@ -2,24 +2,13 @@ namespace SparkMind.Domain.Models;
 
 public class LobbyStateMachine(Func<bool> isGameOver)
 {
-    public LobbyState State
-    {
-        get;
-        private set
-        {
-            if (value != State)
-                OnStateChanged?.Invoke();
-            field = value;
-        }
-    } = LobbyState.WaitingForStart;
+    public LobbyState State { get; private set; } = LobbyState.WaitingForStart;
 
-    public DateTimeOffset? AutoAdvanceTimestamp { get; private set; } 
-    public int QuestionIndex { get; private set; }
+    public DateTimeOffset? AutoAdvanceTimestamp { get; private set; }
     
-    public event Action? OnStateChanged;
-    
-    public void Advance()
+    public (LobbyState oldState, LobbyState newState) Advance()
     {
+        var oldState = State;
         AutoAdvanceTimestamp = null;
         
         switch (State)
@@ -46,5 +35,8 @@ public class LobbyStateMachine(Func<bool> isGameOver)
             case LobbyState.GameOver:
                 break;
         }
+
+        var newState = State;
+        return (oldState, newState);
     }
 }
