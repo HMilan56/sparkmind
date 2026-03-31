@@ -47,7 +47,11 @@ public class Lobby
 
     public void SubmitAnswer(IPlayer player, string answer)
     {
-        var p = _players.FirstOrDefault(p => p.Name == answer);
+        if (StateMachine.State != LobbyState.QuestionActive)
+            return;
+        
+        var p = _players.FirstOrDefault(p => p.Name == player.Name);
+        p?.SubmittedAnswer = answer;
     }
 
     public void RequestNextStep()
