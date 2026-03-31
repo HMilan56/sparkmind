@@ -16,5 +16,7 @@ export default [
         ]),
     ]),
     
-    route("join", "pages/Join.tsx")
+    layout("layouts/PlayerSignalRLayout.tsx", [
+        route("join", "pages/Join.tsx")
+    ])
 ] satisfies RouteConfig;

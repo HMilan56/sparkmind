@@ -10,10 +10,10 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const SignalRContext = createContext<SignalRContextType | undefined>(undefined);
 
-export function SignalRProvider({ children }: { children: React.ReactNode }) {
+export function SignalRProvider({ children, serverUrl, accessToken = null }: { children: React.ReactNode, serverUrl: string, accessToken?: string | null }) {
     const [isConnected, setIsConnected] = useState(false);
 
-    const gameService = GameService.getInstance(import.meta.env.VITE_API_BASE_URL);
+    const gameService = GameService.getInstance(serverUrl, accessToken);
 
     useEffect(() => {
         const init = async () => {

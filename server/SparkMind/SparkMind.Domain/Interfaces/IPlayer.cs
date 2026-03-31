@@ -8,4 +8,5 @@ public interface IPlayer
     public string Name { get; set; }
     public Lobby Lobby { get; set; }
     public string SubmittedAnswer { get; }
+    public bool IsOnline { get; set; }
 }

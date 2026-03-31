@@ -4,19 +4,22 @@ export class GameService {
     private readonly connection: signalR.HubConnection;
     private static instance: GameService;
 
-    private constructor(baseUrl: string) {
+    private constructor(serverUrl: string, accessToken: string | null) {
+        const httpOptions: signalR.IHttpConnectionOptions = {
+            accessTokenFactory: accessToken ? () => accessToken : undefined,
+            transport: signalR.HttpTransportType.WebSockets
+        };
+
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(`${baseUrl}/game`, {
-                accessTokenFactory: () => localStorage.getItem("token") || ""
-            })
+            .withUrl(serverUrl, httpOptions)
             .withAutomaticReconnect()
             .configureLogging(signalR.LogLevel.Information)
             .build();
     }
 
-    public static getInstance(baseUrl: string): GameService {
+    public static getInstance(serverUrl: string, accessToken: string | null): GameService {
         if (!GameService.instance) {
-            GameService.instance = new GameService(baseUrl);
+            GameService.instance = new GameService(serverUrl, accessToken);
         }
         return GameService.instance;
     }
@@ -40,9 +43,9 @@ export class GameService {
     }
 
     // Eseménykezelők regisztrálása
-    public onPlayerJoined(callback: (name: string) => void) {
-        this.connection.on("PlayerJoined", callback);
-        return () => this.connection.off("PlayerJoined", callback);
+    public onPlayersUpdated(callback: (players: string[]) => void) {
+        this.connection.on("PlayersUpdated", callback);
+        return () => this.connection.off("PlayersUpdated", callback);
     }
 
     // Küldés (Invoke)
@@ -50,9 +53,9 @@ export class GameService {
         return this.connection.invoke("JoinLobby", code, nick);
     }
 
-    public async createLobby() {
+    public async createLobby(quizId: number) {
         try {
-            const code: string = await this.connection.invoke<string>("CreateOrGetLobby");
+            const code: string = await this.connection.invoke<string>("CreateOrGetLobby", quizId);
             return code;
         } catch (err) {
             throw new Error(`Service error: ${err}`);

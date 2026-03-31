@@ -6,6 +6,10 @@ public class Lobby
 {
     private List<Player> _players = [];
     public IReadOnlyList<IPlayer> Players => _players;
+    public List<string> OnlinePlayers => _players
+        .Where(p => p.IsOnline)
+        .Select(p => p.Name)
+        .ToList();
     public int QuestionIndex { get; set; } = -1;
     public Question CurrentQuestion => Quiz.Questions[QuestionIndex];
     public string Code { get; } = Guid.NewGuid().ToString()[..5].ToUpper();

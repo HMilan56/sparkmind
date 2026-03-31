@@ -10,20 +10,20 @@ export function useLobby() {
     useEffect(() => {
         if (!isConnected) return;
 
-        const createLobby = async() => {
-            const code = await gameService.createLobby();
+        const createLobby = async () => {
+            const code = await gameService.createLobby(16);
             setCode(code);
         }
 
         createLobby();
 
-        const unsubscribe = gameService.onPlayerJoined(playerName => {
-            setPlayers(prev => [...prev, playerName]);
-        });
+        const unsubscribes = [
+            gameService.onPlayersUpdated(setPlayers)
+        ];
 
-        return () => unsubscribe();
+        return () => unsubscribes.forEach(unsub => unsub());
     }, [isConnected]);
-    
+
     const startGame = async () => {
         console.log("Lobby: starting game");
     }

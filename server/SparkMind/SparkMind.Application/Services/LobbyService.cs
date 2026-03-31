@@ -17,13 +17,14 @@ public class LobbyService(
     public async Task JoinLobby(string code, string name, string connectionId)
     {
         var lobby = lobbyRepository.GetByCode(code);
-        var player = lobby?.AddOrGetPlayer(name);
+        if (lobby == null)
+            throw new ArgumentException($"Cannot find lobby code: {code}");
+        
+        var player = lobby.AddOrGetPlayer(name);
 
-        if (player != null)
-        {
-            connectionRepository.AddPlayer(connectionId, player);
-            await notifier.NotifyHostPlayerJoined(code, name);
-        }
+        connectionRepository.AddPlayer(connectionId, player);
+        player.IsOnline = true;
+        await notifier.NotifyHostPlayersUpdated(code, lobby.OnlinePlayers);
     }
 
     public async Task<string> CreateOrGetLobby(int userId, string connectionId, int quizId)
@@ -78,7 +79,9 @@ public class LobbyService(
         var player = connectionRepository.GetPlayerByConnectionId(connectionId);
         if (player != null)
         {
-            await notifier.NotifyHostPlayerLeft(player.Lobby.Code, player.Name);
+            player.IsOnline = false;
+            var onlinePlayers = player.Lobby.Players.Where(p => p.IsOnline).Select(p => p.Name).ToList();
+            await notifier.NotifyHostPlayersUpdated(player.Lobby.Code, onlinePlayers);
         }
     }
 }

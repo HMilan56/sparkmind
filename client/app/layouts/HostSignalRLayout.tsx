@@ -8,7 +8,7 @@ export default function HostSignalRLayout() {
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     return (
-        <SignalRProvider>
+        <SignalRProvider serverUrl={`${baseUrl}/game`} accessToken={token}>
             <Outlet />
         </SignalRProvider>
     )

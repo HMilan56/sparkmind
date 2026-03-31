@@ -6,14 +6,9 @@ namespace SparkMind.Infrastructure.RealTime;
 
 public class SignalRNotificationService(IHubContext<GameHub> hubContext) : IGameNotificationService
 {
-    public async Task NotifyHostPlayerJoined(string groupName, string playerName)
+    public async Task NotifyHostPlayersUpdated(string groupName, List<string> players)
     {
-        await hubContext.Clients.Group(groupName).SendAsync("PlayerJoined", playerName);
-    }
-
-    public async Task NotifyHostPlayerLeft(string groupName, string playerName)
-    {
-        await hubContext.Clients.Group(groupName).SendAsync("PlayerLeft", playerName);
+        await hubContext.Clients.Group(groupName).SendAsync("PlayersUpdated", players);
     }
 
     public async Task NotifyStateUpdated(string groupName, object state)

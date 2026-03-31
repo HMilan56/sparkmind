@@ -12,7 +12,6 @@ import { Box, CircularProgress, createTheme, CssBaseline, Typography } from "@mu
 import { ThemeProvider } from "@mui/material/styles";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
-import { SignalRProvider } from "./contexts/SignalRContext";
 
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -109,10 +108,8 @@ export default function App() {
         <ThemeProvider theme={theme}>
             <QueryClientProvider client={queryClient}>
                 <SnackbarProvider>
-                    <SignalRProvider>
-                        <CssBaseline />
-                        <Outlet />
-                    </SignalRProvider>
+                    <CssBaseline />
+                    <Outlet />
                 </SnackbarProvider>
             </QueryClientProvider>
         </ThemeProvider>
