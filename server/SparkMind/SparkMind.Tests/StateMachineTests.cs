@@ -19,8 +19,9 @@ public class StateMachineTests
             new Question(),
             new Question(),
         ];
-        
-        var lobby = new Lobby(1, new Quiz { Questions = questions });
+
+        var authorMock = new Mock<User>();
+        var lobby = new Lobby(1, new Quiz { Author = authorMock.Object, Questions = questions });
         var stateMachine = lobby.StateMachine;
         
         stateMachine.State.Should().Be(LobbyState.WaitingForStart);
@@ -58,7 +59,8 @@ public class StateMachineTests
     public async Task AutoAdvanceTest()
     {
         var questions = new List<Question> { new(), new() };
-        var lobby = new Lobby(1, new Quiz { Questions = questions });
+        var authorMock = new Mock<User>();
+        var lobby = new Lobby(1, new Quiz { Author = authorMock.Object, Questions = questions });
 
         var realRepo = new LobbyRepository();
         realRepo.Save(lobby);

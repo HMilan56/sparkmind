@@ -8,17 +8,23 @@ namespace SparkMind.Application.Mappers;
 public partial class QuizMapper
 {
     [MapProperty(nameof(QuizDataDto.Desc), nameof(Quiz.Description))]
-    public partial Quiz MapToDomain(QuizDataDto dto);
+    [MapperIgnoreTarget(nameof(Quiz.Author))]
+    public partial void UpdateFromDtoToDomain(QuizDataDto dto, Quiz quiz);
     
     [MapProperty(nameof(Quiz.Description), nameof(QuizDataDto.Desc))]
+    [MapperIgnoreSource(nameof(Quiz.Author))]
     public partial QuizDataDto MapToDto(Quiz quiz);
 
-    public partial Question MapToDomain(QuestionDataDto dto);
-    public partial QuestionDataDto MapToDto(Question question);
+    [MapperIgnoreTarget(nameof(Question.Quiz))]
+    private partial Question MapToDomain(QuestionDataDto dto);
+    [MapperIgnoreSource(nameof(Question.Quiz))]
+    private partial QuestionDataDto MapToDto(Question question);
     
-    public partial Answer MapToDomain(AnswerDataDto dto);
-    public partial AnswerDataDto MapToDto(Answer answer);
+    [MapperIgnoreTarget(nameof(Answer.Question))]
+    private partial Answer MapToDomain(AnswerDataDto dto);
+    [MapperIgnoreSource(nameof(Answer.Question))]
+    private partial AnswerDataDto MapToDto(Answer answer);
 
-    public partial QuizSettings MapToDomain(QuizSettingsDto dto);
-    public partial QuizSettingsDto MapToDto(QuizSettings settings);
+    private partial QuizSettings MapToDomain(QuizSettingsDto dto);
+    private partial QuizSettingsDto MapToDto(QuizSettings settings);
 }

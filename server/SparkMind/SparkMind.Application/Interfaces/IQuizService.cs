@@ -8,5 +8,5 @@ public interface IQuizService
     Task<IEnumerable<QuizHeaderDto>> GetLibraryAsync(int userId);
     Task DeleteAsync(int userId, int quizId);
     Task<QuizDataDto> CreateAsync(int userId);
-    Task UpdateAsync(int userId, QuizDataDto quiz);
+    Task UpdateAsync(int userId, QuizDataDto quizDto);
 }

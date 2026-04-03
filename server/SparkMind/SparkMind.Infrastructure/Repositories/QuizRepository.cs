@@ -58,8 +58,7 @@ public class QuizRepository(AppDbContext context) : IQuizRepository
 
     public async Task UpdateAsync(Quiz updatedQuiz)
     {
-        var quiz = await context.Quizzes.SingleAsync(q => q.Id == updatedQuiz.Id);
-        context.Entry(quiz).CurrentValues.SetValues(updatedQuiz);
+        context.Quizzes.Update(updatedQuiz);
         await context.SaveChangesAsync();
     }
 }

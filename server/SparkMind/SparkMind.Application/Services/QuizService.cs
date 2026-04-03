@@ -42,17 +42,18 @@ public class QuizService(QuizMapper mapper, IQuizRepository quizRepository) : IQ
         return mapper.MapToDto(newQuiz);
     }
 
-    public async Task UpdateAsync(int userId, QuizDataDto quiz)
+    public async Task UpdateAsync(int userId, QuizDataDto quizDto)
     {
-        var oldQuiz = await quizRepository.GetByIdAsync(quiz.Id);
+        var quizModel = await quizRepository.GetByIdAsync(quizDto.Id);
         
-        if (oldQuiz == null)
+        if (quizModel == null)
             return;
         
-        if (oldQuiz.Author.Id != userId)
+        if (quizModel.Author.Id != userId)
             throw new UnauthorizedAccessException();
         
-        var updatedQuiz = mapper.MapToDomain(quiz);
-        await quizRepository.UpdateAsync(updatedQuiz);
+        mapper.UpdateFromDtoToDomain(quizDto, quizModel);
+        
+        await quizRepository.UpdateAsync(quizModel);
     }
 }
