@@ -111,6 +111,8 @@ builder.Services.AddSingleton<ILobbyRepository, LobbyRepository>();
 builder.Services.AddSingleton<IConnectionRepository, ConnectionRepository>();
 
 builder.Services.AddTransient<IGameNotificationService, SignalRNotificationService>();
+builder.Services.AddHostedService<GameLoopService>();
+builder.Services.AddScoped<IGameStateService, GameStateService>();
 builder.Services.AddScoped<ILobbyService, LobbyService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IAuthService, AuthService>();

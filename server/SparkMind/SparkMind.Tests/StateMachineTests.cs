@@ -57,21 +57,26 @@ public class StateMachineTests
     [Fact]
     public async Task AutoAdvanceTest()
     {
-        var questions = new List<Question> { new Question(), new Question() };
+        var questions = new List<Question> { new(), new() };
         var lobby = new Lobby(1, new Quiz { Questions = questions });
+
         var realRepo = new LobbyRepository();
         realRepo.Save(lobby);
-
-        var notifierMock = new Mock<IGameNotificationService>();
+        
         var providerMock = new Mock<IServiceProvider>();
         providerMock.Setup(x => x.GetService(typeof(ILobbyRepository))).Returns(realRepo);
-        providerMock.Setup(x => x.GetService(typeof(IGameNotificationService))).Returns(notifierMock.Object);
+        
+        var notifierMock = new Mock<IGameNotificationService>();
+        var gameStateService = new GameStateService(notifierMock.Object);
+        
+        providerMock.Setup(x => x.GetService(typeof(IGameStateService))).Returns(gameStateService);
 
         var scopeMock = new Mock<IServiceScope>();
         scopeMock.Setup(x => x.ServiceProvider).Returns(providerMock.Object);
+        
         var factoryMock = new Mock<IServiceScopeFactory>();
         factoryMock.Setup(x => x.CreateScope()).Returns(scopeMock.Object);
-
+        
         var gameLoopService = new GameLoopService(factoryMock.Object);
     
         lobby.RequestNextStep();

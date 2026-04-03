@@ -5,7 +5,10 @@ using SparkMind.Application.Interfaces;
 
 namespace SparkMind.Infrastructure.Hubs;
 
-public class GameHub(ILobbyService lobbyService) : Hub
+public class GameHub(
+    ILobbyService lobbyService,
+    IGameStateService gameStateService
+) : Hub
 {
     public async Task JoinLobby(string lobbyCode, string playerName)
     {
@@ -26,9 +29,20 @@ public class GameHub(ILobbyService lobbyService) : Hub
         return lobbyCode;
     }
 
-    public override Task OnDisconnectedAsync(Exception? exception)
+    [Authorize]
+    public async Task RequestNextStep()
     {
-        lobbyService.Disconnect(Context.ConnectionId);
-        return base.OnDisconnectedAsync(exception);
+        if (Context.User == null)
+            throw new UnauthorizedAccessException("You need to be logged in to control your lobby!");
+            
+        var hostId = Context.User.GetUserId();
+        var lobby = await lobbyService.GetByHostAsync(hostId);
+        await gameStateService.TransitionToNextState(lobby);
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        await lobbyService.Disconnect(Context.ConnectionId);
+        await base.OnDisconnectedAsync(exception);
     }
 }

@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Paper, Stack, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import BasicMenu from "./BasicMenu";
+import BasicMenu from "../BasicMenu";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import type { QuizHeader } from "~/services/quiz/quiz.types";

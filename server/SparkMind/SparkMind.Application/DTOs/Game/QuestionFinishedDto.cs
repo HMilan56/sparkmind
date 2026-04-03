@@ -1,6 +1,8 @@
 namespace SparkMind.Application.DTOs.Game;
 
 public record QuestionFinishedDto(
+    string Text,
+    List<AnswerOptionDto> Answers,
     string CorrectAnswer,
-    Dictionary<string, int> AnswerStatistics
+    List<AnswerStatDto> AnswerStatistics
 );

@@ -3,7 +3,7 @@ import { QuizCard } from "./QuizCard";
 import type { QuizHeader } from "~/services/quiz/quiz.types";
 import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AddQuizCard } from "./AddQuizCard";
+import { AddQuizCard } from "../AddQuizCard";
 import { useSnackbar } from "~/contexts/SnackbarContext";
 import { ServiceFactory } from "~/services/service-factory";
 

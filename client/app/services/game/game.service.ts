@@ -1,4 +1,5 @@
 import * as signalR from '@microsoft/signalr';
+import type { StateUpdateDto } from './game.types';
 
 export class GameService {
     private readonly connection: signalR.HubConnection;
@@ -30,6 +31,12 @@ export class GameService {
         }
     }
 
+    public async stop(): Promise<void> {
+        if (this.connection.state === signalR.HubConnectionState.Connected) {
+            await this.connection.stop();
+        }
+    }
+
     public onConnectionStateChange(callback: (isConnected: boolean) => void) {
         const checkState = () => {
             callback(this.connection.state === signalR.HubConnectionState.Connected);
@@ -48,9 +55,18 @@ export class GameService {
         return () => this.connection.off("PlayersUpdated", callback);
     }
 
+    public onStateUpdated(callback: (state: StateUpdateDto) => void) {
+        this.connection.on("StateUpdated", callback);
+        return () => this.connection.off("StateUpdated", callback);
+    }
+
     // Küldés (Invoke)
     public async joinLobby(code: string, nick: string) {
         return this.connection.invoke("JoinLobby", code, nick);
+    }
+
+    public async requestNextStep() {
+        await this.connection.invoke("RequestNextStep");
     }
 
     public async createLobby(quizId: number) {

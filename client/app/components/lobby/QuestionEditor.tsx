@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { grey } from '@mui/material/colors';
 import { Button, Grid, Stack, TextField } from '@mui/material';
-import { Answer } from './Answer';
+import { Answer } from '../editor/Answer';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import type { QuizData } from '~/services/quiz/quiz.types';

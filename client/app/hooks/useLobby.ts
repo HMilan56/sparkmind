@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSignalR } from "~/contexts/SignalRContext";
+import type { StateUpdateDto } from "~/services/game/game.types";
 
 export function useLobby() {
     const [players, setPlayers] = useState<string[]>([]);
     const [code, setCode] = useState<string>("");
+    const [stateUpdateDto, setStateUpdateDto] = useState<StateUpdateDto>({
+        state: "WaitingForStart",
+        payload: null
+    });
 
     const { gameService, isConnected } = useSignalR();
 
@@ -18,15 +23,19 @@ export function useLobby() {
         createLobby();
 
         const unsubscribes = [
-            gameService.onPlayersUpdated(setPlayers)
+            gameService.onPlayersUpdated(setPlayers),
+            gameService.onStateUpdated(stateUpdateDto => {
+                setStateUpdateDto(stateUpdateDto);
+                console.log(stateUpdateDto.state);
+            })
         ];
 
         return () => unsubscribes.forEach(unsub => unsub());
     }, [isConnected]);
 
-    const startGame = async () => {
-        console.log("Lobby: starting game");
-    }
+    const requestNextStep = useCallback(() => {
+        gameService.requestNextStep();
+    }, [gameService]);
 
-    return { code, players, startGame };
+    return { code, players, stateUpdateDto, requestNextStep };
 }

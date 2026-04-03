@@ -1,7 +1,7 @@
 import { Box, CircularProgress } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { PageBody } from "~/components/PageBody";
-import { QuizGrid } from "~/components/QuizGrid";
+import { QuizGrid } from "~/components/editor/QuizGrid";
 import { Topbar } from "~/components/Topbar";
 import type { QuizHeader } from "~/services/quiz/quiz.types";
 import { ServiceFactory } from "~/services/service-factory";

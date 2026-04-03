@@ -26,6 +26,8 @@ export function SignalRProvider({ children, serverUrl, accessToken = null }: { c
         };
 
         init();
+
+        return () => { gameService.stop() };
     }, []);
 
     const value = useMemo(() => ({ isConnected, gameService }), [isConnected, gameService]);

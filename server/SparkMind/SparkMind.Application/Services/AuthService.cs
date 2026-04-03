@@ -36,6 +36,12 @@ public class AuthService(UserManager<User> userManager, IConfiguration config)
         return valid ? new AuthResponseDto(token) : null;
     }
 
+    public async Task<User> GetUserAsync(int userId)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        return user ?? throw new Exception($"Cannot find user with id: {userId}");
+    }
+
     private string GenerateJwt(User user)
     {
         var jwtSettings = config.GetSection("Jwt");

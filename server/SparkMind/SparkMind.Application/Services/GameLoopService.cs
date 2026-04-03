@@ -22,31 +22,20 @@ public class GameLoopService(IServiceScopeFactory scopeFactory) : BackgroundServ
     public async Task TickAsync()
     {
         using var scope = scopeFactory.CreateScope();
-
         var lobbyRepository = scope.ServiceProvider.GetRequiredService<ILobbyRepository>();
-        var notifier = scope.ServiceProvider.GetRequiredService<IGameNotificationService>();
-
-        foreach (var lobby in lobbyRepository.GetActiveLobbies())
+        var gameStateService = scope.ServiceProvider.GetRequiredService<IGameStateService>();
+        
+        var now = DateTimeOffset.UtcNow;
+        
+        foreach (var lobby in lobbyRepository.GetActiveLobbies().ToList())
         {
             var sm = lobby.StateMachine;
 
-            if (DateTimeOffset.UtcNow < sm.AutoAdvanceTimestamp)
+            if (sm.AutoAdvanceTimestamp == null || now < sm.AutoAdvanceTimestamp)
                 continue;
 
-            lobby.RequestNextStep();
-            await BroadcastLobbyUpdate(lobby, notifier);
+            sm.ClearAutoAdvance();
+            await gameStateService.TransitionToNextState(lobby);
         }
-    }
-
-    private async Task BroadcastLobbyUpdate(Lobby lobby, IGameNotificationService notifier)
-    {
-        var payload = LobbyMessageFactory.CreatePayload(lobby);
-
-        await notifier.NotifyStateUpdated(lobby.Code, new
-        {
-            State = lobby.StateMachine.State,
-            Deadline = lobby.StateMachine.AutoAdvanceTimestamp,
-            Payload = payload
-        });
     }
 }

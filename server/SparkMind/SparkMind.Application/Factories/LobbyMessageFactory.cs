@@ -18,8 +18,10 @@ public static class LobbyMessageFactory
                 lobby.CurrentQuestion.Answers.Select(a => new AnswerOptionDto(a.Id, a.Text)).ToList()
             ),
             LobbyState.QuestionFinished => new QuestionFinishedDto(
+                lobby.CurrentQuestion.Text,
+                lobby.CurrentQuestion.Answers.Select(a => new AnswerOptionDto(a.Id, a.Text)).ToList(),
                 lobby.CurrentQuestion.Answers.First(a => a.IsCorrect).Text,
-                lobby.GetAnswerStatistics()
+                lobby.GetAnswerStatistics().Select(stat => new AnswerStatDto(stat.Key, stat.Value)).ToList()
             ),
             _ => new { Message = "Transitioning..." }
         };

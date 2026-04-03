@@ -19,7 +19,7 @@ public class Lobby
 
     public Lobby(int userId, Quiz quiz)
     {
-        Host = new Host { UserId = userId };
+        Host = new Host { UserId = userId, lobby = this};
         Quiz = quiz;
         StateMachine = new LobbyStateMachine(IsGameOver);
     }
