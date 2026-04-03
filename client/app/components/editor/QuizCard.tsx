@@ -4,6 +4,7 @@ import BasicMenu from "../menu/BasicMenu";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import type { QuizHeader } from "~/services/quiz/quiz.types";
+import { BasicMenuOption } from "../menu/BasicMenuOption";
 
 function truncateText(text: string, maxLength: number) {
     if (text.length <= maxLength) return text;
@@ -45,10 +46,10 @@ export function QuizCard({ data, onPlay, onEdit, onDelete }: QuizCardProps) {
                     <Button sx={{ borderRadius: "20px", fontWeight: 600 }} color="primary" variant="contained" onClick={() => onPlay()}>
                         PLAY
                     </Button>
-                    <BasicMenu options={[
-                        { desc: "Edit", icon: <EditIcon color="info" fontSize="small" />, onClick: onEdit },
-                        { desc: "Delete", icon: <DeleteForeverIcon color="error" fontSize="small" />, onClick: onDelete }
-                    ]} />
+                    <BasicMenu>
+                        <BasicMenuOption text="Edit" icon={ <EditIcon color="info" fontSize="small" /> } onClick={() => onEdit()} />
+                        <BasicMenuOption text="Delete" icon={< DeleteForeverIcon color="error" fontSize="small" /> } onClick={() => onDelete()} />
+                    </BasicMenu>
                 </CardActions>
             </Stack>
         </Card>
