@@ -1,19 +1,26 @@
 import { AppBar, Box, IconButton, Paper, Stack, TextField, Toolbar, Typography } from "@mui/material";
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
-import BasicMenu, { type MenuOption } from "./BasicMenu";
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Link } from "react-router";
-
-const mockOptions: MenuOption[] = [
-    { desc: "Logout", icon: <LogoutIcon color="error" fontSize="small"/> }
-];
+import { Link, useNavigate } from "react-router";
+import BasicMenu from "./menu/BasicMenu";
+import { BasicMenuOption } from "./menu/BasicMenuOption";
+import { ServiceFactory } from "~/services/service-factory";
 
 export type TopbarProps = {
     title: string
 };
 
-export function Topbar({title}: TopbarProps) {
+
+export function Topbar({ title }: TopbarProps) {
+    const navigate = useNavigate();
+
+    function logout() {
+        const authService = ServiceFactory.getAuthService();
+        authService.logout();
+        navigate(`/host`);
+    }
+
     return (
         <AppBar position="sticky" sx={{ p: 1 }}>
             <Toolbar>
@@ -36,7 +43,13 @@ export function Topbar({title}: TopbarProps) {
                     </Stack>
                     <Stack direction={"row"} alignItems={"center"} gap={1}>
                         <Typography>Username</Typography>
-                        <BasicMenu options={mockOptions} menuIcon={<AccountCircle/>} />
+                        <BasicMenu menuIcon={<AccountCircle />}>
+                            <BasicMenuOption
+                                text="Log out"
+                                icon={<LogoutIcon color="error"/>}
+                                onClick={() => logout()}
+                            />
+                        </BasicMenu>
                     </Stack>
                 </Box>
             </Toolbar>
