@@ -7,9 +7,9 @@ export type AnswerStat = {
 
 export type StateUpdateDto = 
     | { state: "WaitingForStart"; payload: null }
-    | { state: "QuestionPreview"; payload: QuestionPreviewDto }
-    | { state: "QuestionActive"; payload: QuestionActiveDto }
-    | { state: "QuestionFinished"; payload: QuestionFinishedDto }
+    | { state: "QuestionPreview"; payload: QuestionPreviewDto; deadline: number }
+    | { state: "QuestionActive"; payload: QuestionActiveDto; deadline: number }
+    | { state: "QuestionFinished"; payload: QuestionFinishedDto; }
     | { state: "GameOver"; payload: null }
 
 export type QuestionPreviewDto = {

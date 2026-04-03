@@ -27,6 +27,7 @@ export function useLobby(quizId: number) {
             gameService.onStateUpdated(stateUpdateDto => {
                 setStateUpdateDto(stateUpdateDto);
                 console.log(stateUpdateDto.state);
+                console.log(stateUpdateDto.state === "QuestionActive" && stateUpdateDto.deadline)
             })
         ];
 

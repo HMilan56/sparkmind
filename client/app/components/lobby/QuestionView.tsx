@@ -1,6 +1,7 @@
-import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Container, Grid, Paper, Stack, Typography } from "@mui/material";
 import type { QuestionActiveDto, QuestionFinishedDto } from "~/services/game/game.types";
 import { AnswerBox } from "./AnswerBox";
+import { Clock } from "../Clock";
 
 function isFinished(data: QuestionActiveDto | QuestionFinishedDto): data is QuestionFinishedDto {
     return (data as QuestionFinishedDto).answerStatistics !== undefined;
@@ -8,10 +9,11 @@ function isFinished(data: QuestionActiveDto | QuestionFinishedDto): data is Ques
 
 export type QuestionResultsProps = {
     data: QuestionActiveDto | QuestionFinishedDto;
+    deadline?: number;
     onNextQuestion: () => void;
 }
 
-export function QuestionView({ data, onNextQuestion }: QuestionResultsProps) {
+export function QuestionView({ data, deadline, onNextQuestion }: QuestionResultsProps) {
     const totalVotes = isFinished(data) ? data.answerStatistics.reduce((sum, stat) => sum + stat.count, 0) : 0;
 
     return (
@@ -19,7 +21,10 @@ export function QuestionView({ data, onNextQuestion }: QuestionResultsProps) {
             <Grid container spacing={2} mt={2}>
                 <Grid size={12}>
                     <Paper variant="outlined" sx={{ p: 6, textAlign: 'center' }}>
-                        <Typography variant="h4">{data.text}</Typography>
+                        <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+                            <Typography variant="h4">{data.text}</Typography>
+                            {deadline && <Clock deadline={deadline}/>}
+                        </Stack>
                     </Paper>
                 </Grid>
 
@@ -41,7 +46,7 @@ export function QuestionView({ data, onNextQuestion }: QuestionResultsProps) {
                 })}
                 <Grid size={12}>
                     <Box display={"flex"} justifyContent={"flex-end"}>
-                        {isFinished(data) && <Button variant="outlined" onClick={() => onNextQuestion() }>Next question</Button>}
+                        {isFinished(data) && <Button variant="outlined" onClick={() => onNextQuestion()}>Next question</Button>}
                     </Box>
                 </Grid>
             </Grid>

@@ -1,14 +1,19 @@
-import { Container, Typography } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
+import { Clock } from "../Clock";
 
 export type QuestionPreviewProps = {
     text: string;
     number: number;
+    deadline?: number;
 }
 
-export function QuestionPreview({text, number}: QuestionPreviewProps) {
+export function QuestionPreview({ text, number, deadline }: QuestionPreviewProps) {
     return (
         <Container maxWidth="xl">
-            <Typography variant="h2">{text}</Typography>
+            <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+                <Typography variant="h2">{text}</Typography>
+                { deadline && <Clock deadline={deadline}/>}
+            </Stack>
         </Container>
     );
 }

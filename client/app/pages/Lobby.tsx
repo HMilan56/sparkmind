@@ -5,14 +5,22 @@ import { Topbar } from "~/components/Topbar";
 import { WaitingRoom } from "~/components/lobby/WaitingRoom";
 import { useLobby } from "~/hooks/useLobby";
 import { useParams } from "react-router";
-import { mockQuestionFinishedDto } from "~/services/game/game.mock";
+import { mockQuestionActiveDto } from "~/services/game/game.mock";
+import type { LobbyState, StateUpdateDto } from "~/services/game/game.types";
 
-export default function HostLobby() {
+function tryGetDeadline(dto: StateUpdateDto) {
+    const { state } = dto;
+    return state === "QuestionPreview" || state === "QuestionActive" ? dto.deadline : undefined;
+}
+
+export default function Lobby() {
     const { quizId: quizIdParam } = useParams();
 
     const lobby = useLobby(Number(quizIdParam));
 
-    const { state, payload } = lobby.stateUpdateDto;
+    const dto = lobby.stateUpdateDto;
+    const { state, payload } = dto;
+    const deadline = tryGetDeadline(dto);
 
     return (
         <>
@@ -21,11 +29,12 @@ export default function HostLobby() {
                 state === "WaitingForStart" ? (
                     <WaitingRoom players={lobby.players} code={lobby.code} onStartGame={() => lobby.requestNextStep()} />
                 ) : state === "QuestionPreview" ? (
-                    <QuestionPreview text={payload.text} number={payload.number} />
+                    <QuestionPreview text={payload.text} number={payload.number} deadline={deadline}/>
                 ) : state === "QuestionActive" || state === "QuestionFinished" ? (  
-                    <QuestionView data={payload} onNextQuestion={() => lobby.requestNextStep()}/>
+                    <QuestionView data={payload} onNextQuestion={() => lobby.requestNextStep()} deadline={deadline}/>
                 )  : <UnhandledState stateName={state} />
             }
+            {/* <QuestionView data={mockQuestionActiveDto} onNextQuestion={() => {}} deadline={Date.now() + 20000}/> */}
         </>
     );
 };

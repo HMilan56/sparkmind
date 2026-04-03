@@ -16,7 +16,7 @@ public class GameStateService(IGameNotificationService notifier) : IGameStateSer
         await notifier.NotifyStateUpdated(lobby.Code, new
         {
             State = lobby.StateMachine.State.ToString(),
-            Deadline = lobby.StateMachine.AutoAdvanceTimestamp,
+            Deadline = lobby.StateMachine.AutoAdvanceTimestamp?.ToUnixTimeMilliseconds(),
             Payload = payload
         });
     }
