@@ -73,6 +73,7 @@ export function QuizGrid({ cardData }: QuizGridProps) {
                     >
                         <QuizCard
                             data={header}
+                            onPlay={() => void navigate(`/host/lobby/${header.id}`)}
                             onEdit={() => void navigate(`/host/editor/${header.id}`)}
                             onDelete={() => deleteQuiz(header.id)}
                         />

@@ -1,4 +1,4 @@
-import { Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import type { QuestionActiveDto, QuestionFinishedDto } from "~/services/game/game.types";
 import { AnswerBox } from "./AnswerBox";
 
@@ -8,11 +8,11 @@ function isFinished(data: QuestionActiveDto | QuestionFinishedDto): data is Ques
 
 export type QuestionResultsProps = {
     data: QuestionActiveDto | QuestionFinishedDto;
+    onNextQuestion: () => void;
 }
 
-export function QuestionView({ data }: QuestionResultsProps) {
+export function QuestionView({ data, onNextQuestion }: QuestionResultsProps) {
     const totalVotes = isFinished(data) ? data.answerStatistics.reduce((sum, stat) => sum + stat.count, 0) : 0;
-
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
@@ -39,6 +39,11 @@ export function QuestionView({ data }: QuestionResultsProps) {
                         />
                     );
                 })}
+                <Grid size={12}>
+                    <Box display={"flex"} justifyContent={"flex-end"}>
+                        {isFinished(data) && <Button variant="outlined" onClick={() => onNextQuestion() }>Next question</Button>}
+                    </Box>
+                </Grid>
             </Grid>
         </Container>
     );

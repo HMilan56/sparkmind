@@ -11,7 +11,7 @@ export default [
             route("editor/:quizId", "pages/Editor.tsx"),
 
             layout("layouts/HostSignalRLayout.tsx", [
-                route("lobby", "pages/Lobby.tsx")
+                route("lobby/:quizId", "pages/Lobby.tsx")
             ])
         ]),
     ]),

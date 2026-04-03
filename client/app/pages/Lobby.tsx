@@ -4,9 +4,13 @@ import { QuestionPreview } from "~/components/lobby/QuestionPreview";
 import { Topbar } from "~/components/Topbar";
 import { WaitingRoom } from "~/components/lobby/WaitingRoom";
 import { useLobby } from "~/hooks/useLobby";
+import { useParams } from "react-router";
+import { mockQuestionFinishedDto } from "~/services/game/game.mock";
 
 export default function HostLobby() {
-    const lobby = useLobby();
+    const { quizId: quizIdParam } = useParams();
+
+    const lobby = useLobby(Number(quizIdParam));
 
     const { state, payload } = lobby.stateUpdateDto;
 
@@ -19,12 +23,8 @@ export default function HostLobby() {
                 ) : state === "QuestionPreview" ? (
                     <QuestionPreview text={payload.text} number={payload.number} />
                 ) : state === "QuestionActive" || state === "QuestionFinished" ? (  
-                    <QuestionView data={payload}/>
+                    <QuestionView data={payload} onNextQuestion={() => lobby.requestNextStep()}/>
                 )  : <UnhandledState stateName={state} />
-            }
-            {
-                // <QuestionActive questionActiveDto={mockQuestionActiveDto} />
-                
             }
         </>
     );

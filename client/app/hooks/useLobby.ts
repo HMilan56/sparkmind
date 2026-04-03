@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSignalR } from "~/contexts/SignalRContext";
 import type { StateUpdateDto } from "~/services/game/game.types";
 
-export function useLobby() {
+export function useLobby(quizId: number) {
     const [players, setPlayers] = useState<string[]>([]);
     const [code, setCode] = useState<string>("");
     const [stateUpdateDto, setStateUpdateDto] = useState<StateUpdateDto>({
@@ -16,7 +16,7 @@ export function useLobby() {
         if (!isConnected) return;
 
         const createLobby = async () => {
-            const code = await gameService.createLobby(16);
+            const code = await gameService.createLobby(quizId);
             setCode(code);
         }
 

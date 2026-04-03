@@ -19,11 +19,12 @@ function truncateText(text: string, maxLength: number) {
 
 export type QuizCardProps = {
     data: QuizHeader;
+    onPlay: () => void;
     onEdit: () => void;
     onDelete: () => void;
 }
 
-export function QuizCard({ data, onEdit, onDelete }: QuizCardProps) {
+export function QuizCard({ data, onPlay, onEdit, onDelete }: QuizCardProps) {
     return (
         <Card sx={{ width: "100%", height: "100%", maxWidth: "360px" }}>
             <Stack direction={"column"} justifyContent={"space-between"} height={"100%"}>
@@ -41,7 +42,7 @@ export function QuizCard({ data, onEdit, onDelete }: QuizCardProps) {
                     </CardContent>
                 </Box>
                 <CardActions sx={{ justifyContent: "flex-end", alignItems: "center" }}>
-                    <Button sx={{ borderRadius: "20px", fontWeight: 600 }} color="primary" variant="contained">
+                    <Button sx={{ borderRadius: "20px", fontWeight: 600 }} color="primary" variant="contained" onClick={() => onPlay()}>
                         PLAY
                     </Button>
                     <BasicMenu options={[
