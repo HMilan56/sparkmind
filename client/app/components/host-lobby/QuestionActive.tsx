@@ -1,5 +1,5 @@
 import { Container, Grid, Paper, Typography } from "@mui/material";
-import type { QuestionActiveDto } from "~/services/game/game.types";
+import type { QuestionActiveDto } from "~/services/game/types/host";
 
 export type QuestionActiveProps = {
     questionActiveDto: QuestionActiveDto
