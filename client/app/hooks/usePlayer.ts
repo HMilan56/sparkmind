@@ -19,10 +19,10 @@ export function usePlayer() {
         if (!isConnected) return;
         try {
             await gameService.joinLobby(lobbyCode, nickName);
+            setData({lobbyCode, nickName});
         } catch(err) {
             snackbar.showSnackbar("Network error: " + err, "error");
         }
-        setData({lobbyCode, nickName});
     }, [gameService, isConnected]);
 
     const submitAnswer = useCallback(async (answer: number) => {
