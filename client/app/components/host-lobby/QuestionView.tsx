@@ -1,5 +1,5 @@
 import { Box, Button, Container, Grid, Paper, Stack, Typography } from "@mui/material";
-import type { QuestionActiveDto, QuestionFinishedDto } from "~/services/game/game.types";
+import type { QuestionActiveDto, QuestionFinishedDto } from "~/services/game/types/host";
 import { AnswerBox } from "./AnswerBox";
 import { Clock } from "../Clock";
 

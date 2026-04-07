@@ -1,14 +1,14 @@
 import { Container, Typography } from "@mui/material";
-import { QuestionView } from "~/components/lobby/QuestionView";
-import { QuestionPreview } from "~/components/lobby/QuestionPreview";
+import { QuestionView } from "~/components/host-lobby/QuestionView";
+import { QuestionPreview } from "~/components/host-lobby/QuestionPreview";
 import { Topbar } from "~/components/Topbar";
-import { WaitingRoom } from "~/components/lobby/WaitingRoom";
+import { WaitingRoom } from "~/components/host-lobby/WaitingRoom";
 import { useLobby } from "~/hooks/useLobby";
 import { useParams } from "react-router";
 import { mockQuestionActiveDto } from "~/services/game/game.mock";
-import type { LobbyState, StateUpdateDto } from "~/services/game/game.types";
+import type { HostUpdateDto } from "~/services/game/types/host";
 
-function tryGetDeadline(dto: StateUpdateDto) {
+function tryGetDeadline(dto: HostUpdateDto) {
     const { state } = dto;
     return state === "QuestionPreview" || state === "QuestionActive" ? dto.deadline : undefined;
 }

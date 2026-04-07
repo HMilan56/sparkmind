@@ -1,20 +1,21 @@
 import { Container, IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import { useForm } from "react-hook-form";
-import { useJoin } from "~/hooks/useJoin";
 
 type JoinForm = {
     nickName: string;
     lobbyCode: string;
 };
 
-export function JoinCard() {
-    const joinLobby = useJoin();
-    
+export type JoinCardProps = {
+    onJoinLobby: (lobbyCode: string, nickName: string) => void;
+}
+
+export function JoinCard({ onJoinLobby }: JoinCardProps) {
     const { register, handleSubmit } = useForm<JoinForm>();
 
     const onSubmit = (data: JoinForm) => {
-        joinLobby(data.lobbyCode.toUpperCase(), data.nickName);
+        onJoinLobby(data.lobbyCode.toUpperCase(), data.nickName);
     };
 
     return (

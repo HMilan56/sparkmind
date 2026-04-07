@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSignalR } from "~/contexts/SignalRContext";
-import type { StateUpdateDto } from "~/services/game/game.types";
+import type { HostUpdateDto } from "~/services/game/types/host";
 
 export function useLobby(quizId: number) {
     const [players, setPlayers] = useState<string[]>([]);
     const [code, setCode] = useState<string>("");
-    const [stateUpdateDto, setStateUpdateDto] = useState<StateUpdateDto>({
+    const [stateUpdateDto, setStateUpdateDto] = useState<HostUpdateDto>({
         state: "WaitingForStart",
         payload: null
     });
@@ -16,6 +16,7 @@ export function useLobby(quizId: number) {
         if (!isConnected) return;
 
         const createLobby = async () => {
+            console.log("createlobby invoked");
             const code = await gameService.createLobby(quizId);
             setCode(code);
         }
@@ -23,16 +24,17 @@ export function useLobby(quizId: number) {
         createLobby();
 
         const unsubscribes = [
-            gameService.onPlayersUpdated(setPlayers),
-            gameService.onStateUpdated(stateUpdateDto => {
+            gameService.onPlayerListUpdate(setPlayers),
+            gameService.onHostUpdate(stateUpdateDto => {
                 setStateUpdateDto(stateUpdateDto);
                 console.log(stateUpdateDto.state);
+                console.log(stateUpdateDto.payload);
                 console.log(stateUpdateDto.state === "QuestionActive" && stateUpdateDto.deadline)
             })
         ];
 
         return () => unsubscribes.forEach(unsub => unsub());
-    }, [isConnected]);
+    }, [gameService, isConnected]);
 
     const requestNextStep = useCallback(() => {
         gameService.requestNextStep();

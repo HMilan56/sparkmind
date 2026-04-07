@@ -1,5 +1,6 @@
 import * as signalR from '@microsoft/signalr';
-import type { StateUpdateDto } from './game.types';
+import type { HostUpdateDto } from './types/host';
+import type { PlayerUpdateDto } from './types/player';
 
 export class GameService {
     private readonly connection: signalR.HubConnection;
@@ -49,20 +50,30 @@ export class GameService {
         checkState();
     }
 
-    // Eseménykezelők regisztrálása
-    public onPlayersUpdated(callback: (players: string[]) => void) {
-        this.connection.on("PlayersUpdated", callback);
-        return () => this.connection.off("PlayersUpdated", callback);
+    private on<T>(method: string, callback: (dto: T) => void) {
+        this.connection.on(method, callback);
+        return () => this.connection.off(method, callback);
     }
 
-    public onStateUpdated(callback: (state: StateUpdateDto) => void) {
-        this.connection.on("StateUpdated", callback);
-        return () => this.connection.off("StateUpdated", callback);
+    public onPlayerListUpdate(callback: (players: string[]) => void) {
+        return this.on("PlayerListUpdate", callback);
+    }
+
+    public onHostUpdate(callback: (state: HostUpdateDto) => void) {
+        return this.on("HostUpdate", callback);
+    }
+
+    public onPlayerUpdate(callback: (state: PlayerUpdateDto) => void) {
+        return this.on("PlayerUpdate", callback);
     }
 
     // Küldés (Invoke)
     public async joinLobby(code: string, nick: string) {
         return this.connection.invoke("JoinLobby", code, nick);
+    }
+
+    public async submitAnswer(answer: number) {
+        await this.connection.invoke("SubmitAnswer", answer);
     }
 
     public async requestNextStep() {
