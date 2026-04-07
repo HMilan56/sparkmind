@@ -5,11 +5,10 @@ import { QuestionView } from "~/components/player-lobby/QuestionView";
 import { Topbar } from "~/components/Topbar";
 import { usePlayer } from "~/hooks/usePlayer";
 
+
 export default function Join() {
     const player = usePlayer();
-
     const { state, payload } = player.stateUpdateDto;
-
 
     return (
         <Box component={"main"} sx={{ display: 'flex', flexDirection: 'column', height: '100vh', flexGrow: 1 }}>
@@ -19,8 +18,8 @@ export default function Join() {
                     <JoinCard onJoinLobby={player.joinLobby} />
                 ) : state === "WaitingForStart" ? (
                     <WaitingRoom />
-                ) : state === "QuestionActive" ? (
-                    <QuestionView onAnswerClick={player.submitAnswer}/>
+                ) : state === "QuestionPreview" || state === "QuestionActive" ? (
+                    <QuestionView enableAnswers={state === "QuestionActive"} deadline={player.stateUpdateDto.deadline} questionText={payload.text} onAnswer={player.submitAnswer}/>
                 ) :<UnhandledState stateName={state}/>
             }
         </Box>

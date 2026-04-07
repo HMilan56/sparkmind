@@ -1,65 +1,67 @@
-import React from "react";
-import { Container, Grid, Button, Typography, Box, Paper } from "@mui/material";
-import BoltIcon from "@mui/icons-material/Bolt";
-
-type Option = {
-    id: number;
-    color: "error" | "primary" | "warning" | "success";
-};
+import { Container, Typography, Box, Paper, Slide, Stack } from "@mui/material";
+import { AnswerGrid } from "./AnswerGrid";
+import { Clock } from "../Clock";
 
 export type AnswerButtonGridProps = {
-    onAnswerClick: (id: number) => void;
+    questionText: string;
+    deadline: number;
+    enableAnswers: boolean;
+    onAnswer: (id: number) => void;
 };
 
-export function QuestionView({ onAnswerClick }: AnswerButtonGridProps) {
-    const options: Option[] = [
-        { id: 1, color: "error" },
-        { id: 2, color: "primary" },
-        { id: 3, color: "warning" },
-        { id: 4, color: "success" },
-    ];
-
+export function QuestionView({ questionText, deadline, enableAnswers, onAnswer }: AnswerButtonGridProps) {
     return (
-        <Container maxWidth="md" sx={{ height: "100%", display: "flex", flexDirection: "column", py: 2 }}>
-            <Box sx={{ display: "flex", alignItems: "flex-start", mb: 5 }}>
-                <Paper elevation={0} sx={{ p: 3, width: "100%", textAlign: "center", bgcolor: "background.paper", borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)" }}>
-                    <Typography variant="h5" fontWeight="800">N/A</Typography>
+        <Container
+            maxWidth="md"
+            sx={{
+                height: "100vh",
+                display: "flex",
+                flexDirection: "column",
+                py: 2,
+            }}
+        >
+            <Box
+                sx={{
+                    display: "flex",
+                    flexGrow: enableAnswers ? 0 : 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mt: 4,
+                    mb: 4,
+                    transition: "flex-grow 0.6s cubic-bezier(0.4, 0, 0.2, 1), margin 0.6s ease",
+                }}
+            >
+                <Paper
+                    elevation={0}
+                    sx={{
+                        p: 3,
+                        width: "100%",
+                        textAlign: "center",
+                        bgcolor: "background.paper",
+                        borderRadius: 4,
+                        border: "1px solid rgba(255,255,255,0.1)"
+                    }}
+                >
+                    <Stack direction={{xs: "column", sm: "row"}} px={3} justifyContent={"space-between"} alignItems={"center"} spacing={3}>
+                        <Typography variant="h4" fontWeight="800">
+                            {questionText}
+                        </Typography>
+                        <Clock deadline={deadline}/>
+                    </Stack>
                 </Paper>
             </Box>
 
-            <Grid container spacing={4} sx={{ mb: 2 }}>
-                {options.map((opt, index) => (
-                    <Grid key={opt.id} size={{ xs: 6 }}>
-                        <Button
-                            onClick={() => onAnswerClick(opt.id)}
-                            fullWidth
-                            variant="outlined"
-                            color={opt.color}
-                            sx={{
-                                minHeight: "300px",
-                                height: "100%",
-                                borderRadius: 4,
-                                borderWidth: 3,
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                p: 2,
-                                gap: 0.5,
-                                transition: "0.3s",
-                                boxShadow: (theme) => `0 0 15px ${theme.palette[opt.color].main}`,
-                                "&:hover": { borderWidth: 3, boxShadow: (theme) => `0 0 25px ${theme.palette[opt.color].main}` }
-                            }}
-                        >
-                            <BoltIcon sx={{ fontSize: "6rem" }} />
-
-                            <Typography variant="caption" sx={{ opacity: 0.6, fontWeight: "bold", fontSize: "1.5rem" }}>
-                                #{index + 1}
-                            </Typography>
-                        </Button>
-                    </Grid>
-                ))}
-            </Grid>
+            <Slide 
+                direction="up" 
+                in={enableAnswers} 
+                mountOnEnter 
+                unmountOnExit
+                timeout={600}
+            >
+                <Box sx={{ flexGrow: 1 }}>
+                    <AnswerGrid onAnswer={onAnswer} />
+                </Box>
+            </Slide>
         </Container>
     );
 }

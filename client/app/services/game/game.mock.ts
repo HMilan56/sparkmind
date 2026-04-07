@@ -1,4 +1,5 @@
-import type { QuestionActiveDto, QuestionFinishedDto } from "./game.types";
+import type { QuestionActiveDto, QuestionFinishedDto } from "./types/host";
+
 
 export const mockQuestionActiveDto: QuestionActiveDto = {
     text: "This is a question?",
