@@ -5,7 +5,6 @@ import { QuestionView } from "~/components/player-lobby/QuestionView";
 import { Topbar } from "~/components/Topbar";
 import { usePlayer } from "~/hooks/usePlayer";
 
-
 export default function Join() {
     const player = usePlayer();
     const { state, payload } = player.stateUpdateDto;
@@ -19,8 +18,8 @@ export default function Join() {
                 ) : state === "WaitingForStart" ? (
                     <WaitingRoom />
                 ) : state === "QuestionPreview" || state === "QuestionActive" ? (
-                    <QuestionView enableAnswers={state === "QuestionActive"} deadline={player.stateUpdateDto.deadline} questionText={payload.text} onAnswer={player.submitAnswer}/>
-                ) :<UnhandledState stateName={state}/>
+                    <QuestionView enableAnswers={state === "QuestionActive"} deadline={player.stateUpdateDto.deadline} questionText={payload.text} onAnswer={player.submitAnswer} />
+                ) : <UnhandledState stateName={state} />
             }
         </Box>
     )

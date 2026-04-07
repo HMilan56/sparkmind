@@ -13,17 +13,19 @@ export type QuestionResultsProps = {
     onNextQuestion: () => void;
 }
 
+const colorsInOrder: ("error" | "primary" | "warning" | "success")[] = ["error", "primary", "warning", "success"];
+
 export function QuestionView({ data, deadline, onNextQuestion }: QuestionResultsProps) {
     const totalVotes = isFinished(data) ? data.answerStatistics.reduce((sum, stat) => sum + stat.count, 0) : 0;
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            <Grid container spacing={2} mt={2}>
+            <Grid container spacing={4} mt={2}>
                 <Grid size={12}>
                     <Paper variant="outlined" sx={{ p: 6, textAlign: 'center' }}>
                         <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
                             <Typography variant="h4">{data.text}</Typography>
-                            {deadline && <Clock deadline={deadline}/>}
+                            {!!deadline && <Clock deadline={deadline}/>}
                         </Stack>
                     </Paper>
                 </Grid>
@@ -35,13 +37,16 @@ export function QuestionView({ data, deadline, onNextQuestion }: QuestionResults
                     const targetPercentage = stat && totalVotes > 0 ? Math.round((stat.count / totalVotes) * 100) : 0;
 
                     return (
-                        <AnswerBox
-                            key={answer.id}
-                            answer={answer.text}
-                            isCorrect={isCorrect}
-                            percentage={targetPercentage}
-                            showStatistics={isFinished(data)}
-                        />
+                        <Grid key={answer.id} size={{xs: 12, sm: 6}}>
+                            <AnswerBox
+                                index={i}
+                                color={colorsInOrder[i]}
+                                answer={answer.text}
+                                isCorrect={isCorrect}
+                                percentage={targetPercentage}
+                                showStatistics={isFinished(data)}
+                            />
+                        </Grid>
                     );
                 })}
                 <Grid size={12}>

@@ -1,6 +1,7 @@
 import { Container, Typography, Box, Paper, Slide, Stack } from "@mui/material";
 import { AnswerGrid } from "./AnswerGrid";
 import { Clock } from "../Clock";
+import { ClockProgressBar } from "../ClockProgressBar";
 
 export type AnswerButtonGridProps = {
     questionText: string;
@@ -42,11 +43,11 @@ export function QuestionView({ questionText, deadline, enableAnswers, onAnswer }
                         border: "1px solid rgba(255,255,255,0.1)"
                     }}
                 >
-                    <Stack direction={{xs: "column", sm: "row"}} px={3} justifyContent={"space-between"} alignItems={"center"} spacing={3}>
+                    <Stack direction="column" px={3} justifyContent={"space-between"} alignItems={"center"} spacing={3}>
                         <Typography variant="h4" fontWeight="800">
                             {questionText}
                         </Typography>
-                        <Clock deadline={deadline}/>
+                        { enableAnswers ? <Clock deadline={deadline}/> : <ClockProgressBar deadline={deadline}/> }
                     </Stack>
                 </Paper>
             </Box>

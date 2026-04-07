@@ -5,7 +5,6 @@ import { Topbar } from "~/components/Topbar";
 import { WaitingRoom } from "~/components/host-lobby/WaitingRoom";
 import { useLobby } from "~/hooks/useLobby";
 import { useParams } from "react-router";
-import { mockQuestionActiveDto } from "~/services/game/game.mock";
 import type { HostUpdateDto } from "~/services/game/types/host";
 
 function tryGetDeadline(dto: HostUpdateDto) {
@@ -34,7 +33,6 @@ export default function Lobby() {
                     <QuestionView data={payload} onNextQuestion={() => lobby.requestNextStep()} deadline={deadline}/>
                 )  : <UnhandledState stateName={state} />
             }
-            {/* <QuestionView data={mockQuestionActiveDto} onNextQuestion={() => {}} deadline={Date.now() + 20000}/> */}
         </>
     );
 };
