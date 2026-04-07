@@ -31,7 +31,7 @@ public class LobbyStateMachine(Func<bool> isGameOver)
                 } 
                 else
                 {
-                    SwitchToAndScheduleAdvance(LobbyState.GameOver, TimeSpan.FromSeconds(5));
+                    SwitchToAndScheduleAdvance(LobbyState.QuestionPreview, TimeSpan.FromSeconds(5));
                 }
                 break;
             

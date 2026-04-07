@@ -43,6 +43,7 @@ public static class LobbyMessageFactory
             {
                 Leaderboard = lobby.Players.Select(p => new
                 {
+                    p.Name,
                     AnsweredCorrectly = p.SubmittedAnswer == lobby.CurrentQuestion.Answers.First(a => a.IsCorrect).Text,
                     Score = 0
                 }).ToList()
