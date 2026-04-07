@@ -5,7 +5,7 @@ namespace SparkMind.Application.Factories;
 
 public static class LobbyMessageFactory
 {
-    public static object CreatePayload(Lobby lobby)
+    public static object CreatePayloadForHost(Lobby lobby)
     {
         return lobby.StateMachine.State switch
         {
@@ -24,6 +24,33 @@ public static class LobbyMessageFactory
                 lobby.GetAnswerStatistics().Select(stat => new AnswerStatDto(stat.Key, stat.Value)).ToList()
             ),
             _ => new { Message = "Transitioning..." }
+        };
+    }
+
+    public static object CreatePayloadForPlayers(Lobby lobby)
+    {
+        return lobby.StateMachine.State switch
+        {
+            LobbyState.QuestionPreview => new QuestionPreviewDto(
+                lobby.QuestionIndex + 1,
+                lobby.CurrentQuestion.Text
+            ),
+            LobbyState.QuestionActive => new
+            {
+                lobby.CurrentQuestion.Text,
+            },
+            LobbyState.QuestionFinished => new
+            {
+                Leaderboard = lobby.Players.Select(p => new
+                {
+                    AnsweredCorrectly = p.SubmittedAnswer == lobby.CurrentQuestion.Answers.First(a => a.IsCorrect).Text,
+                    Score = 0
+                }).ToList()
+            },
+            _ => new
+            {
+                Message = "Transitioning..."
+            }
         };
     }
 }

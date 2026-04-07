@@ -7,6 +7,7 @@ namespace SparkMind.Infrastructure.Hubs;
 
 public class GameHub(
     ILobbyService lobbyService,
+    IConnectionRepository connectionRepository,
     IGameStateService gameStateService
 ) : Hub
 {
@@ -38,6 +39,17 @@ public class GameHub(
         var hostId = Context.User.GetUserId();
         var lobby = await lobbyService.GetByHostAsync(hostId);
         await gameStateService.TransitionToNextState(lobby);
+    }
+
+    public async Task SubmitAnswer(int answerId)
+    {
+        var player = connectionRepository.GetPlayerByConnectionId(Context.ConnectionId);
+        if  (player == null)
+            throw new Exception("Cannot find matching player for this connection");
+
+        var lobby = player.Lobby;
+        var answer = lobby.CurrentQuestion.Answers[answerId-1];
+        await gameStateService.SubmitAnswer(player, answer.Text);
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)

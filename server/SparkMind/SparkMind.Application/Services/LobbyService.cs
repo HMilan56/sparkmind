@@ -35,7 +35,7 @@ public class LobbyService(
 
         connectionRepository.AddPlayer(connectionId, player);
         player.IsOnline = true;
-        await notifier.NotifyHostPlayersUpdated(code, lobby.OnlinePlayers);
+        await notifier.NotifyHostPlayersUpdated(lobby);
     }
 
     public async Task<string> CreateOrGetLobby(int userId, string connectionId, int quizId)
@@ -64,8 +64,7 @@ public class LobbyService(
         if (player != null)
         {
             player.IsOnline = false;
-            var onlinePlayers = player.Lobby.Players.Where(p => p.IsOnline).Select(p => p.Name).ToList();
-            await notifier.NotifyHostPlayersUpdated(player.Lobby.Code, onlinePlayers);
+            await notifier.NotifyHostPlayersUpdated(player.Lobby);
             connectionRepository.RemovePlayer(connectionId);
             return;
         }
