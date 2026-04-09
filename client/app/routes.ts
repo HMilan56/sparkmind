@@ -9,14 +9,9 @@ export default [
         layout("layouts/HostAuthLayout.tsx", [
             route("library", "pages/Library.tsx"),
             route("editor/:quizId", "pages/Editor.tsx"),
-
-            layout("layouts/HostSignalRLayout.tsx", [
-                route("lobby/:quizId", "pages/Lobby.tsx")
-            ])
+            route("lobby/:quizId", "pages/Lobby.tsx")
         ]),
     ]),
-    
-    layout("layouts/PlayerSignalRLayout.tsx", [
-        route("join", "pages/Join.tsx")
-    ])
+
+    route("join", "pages/Join.tsx")
 ] satisfies RouteConfig;

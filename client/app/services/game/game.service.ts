@@ -1,14 +1,17 @@
 import * as signalR from '@microsoft/signalr';
 import type { HostUpdateDto } from './types/host';
 import type { PlayerUpdateDto } from './types/player';
+import { ServiceFactory } from '../service-factory';
 
 export class GameService {
     private readonly connection: signalR.HubConnection;
-    private static instance: GameService;
+    private static instance: GameService | null;
 
-    private constructor(serverUrl: string, accessToken: string | null) {
+    private constructor(serverUrl: string) {
+        const authService = ServiceFactory.getAuthService();
+
         const httpOptions: signalR.IHttpConnectionOptions = {
-            accessTokenFactory: accessToken ? () => accessToken : undefined,
+            accessTokenFactory: () => authService.getToken() || "",
             transport: signalR.HttpTransportType.WebSockets
         };
 
@@ -19,11 +22,14 @@ export class GameService {
             .build();
     }
 
-    public static getInstance(serverUrl: string, accessToken: string | null): GameService {
-        if (!GameService.instance) {
-            GameService.instance = new GameService(serverUrl, accessToken);
-        }
+    public static getInstance(serverUrl: string): GameService {
+        GameService.instance ??= new GameService(serverUrl);
         return GameService.instance;
+    }
+
+    public static reset(): void {
+        GameService.instance?.stop();
+        GameService.instance = null;
     }
 
     public async start(): Promise<void> {

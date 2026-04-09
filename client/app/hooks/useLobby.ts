@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSignalR } from "~/contexts/SignalRContext";
 import type { HostUpdateDto } from "~/services/game/types/host";
+import { useSignalR } from "./useSignalR";
 
 export function useLobby(quizId: number) {
     const [players, setPlayers] = useState<string[]>([]);

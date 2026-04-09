@@ -1,4 +1,5 @@
 import apiClient from "../api-client";
+import { GameService } from "../game/game.service";
 import type { AuthResponse, IAuthService, LoginRequest, RegisterRequest } from "./auth.types";
 
 export const authService: IAuthService = {
@@ -17,6 +18,8 @@ export const authService: IAuthService = {
     },
 
     logout: (): void => {
+        // Close existing SignalR connection when user logs out
+        GameService.reset();
         localStorage.removeItem("token");
     },
 
