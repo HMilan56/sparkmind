@@ -40,12 +40,14 @@ public class SignalRNotificationService(
         var hostPayload = LobbyMessageFactory.CreatePayloadForHost(lobby);
         var state = lobby.StateMachine.State.ToString();
         var deadline = lobby.StateMachine.AutoAdvanceTimestamp?.ToUnixTimeMilliseconds();
+        var serverTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
         await SendSingleAsync(hostConId, "HostUpdate", new
         {
-            State = state,
+            Type = state,
             Deadline = deadline,
-            Payload = hostPayload
+            Payload = hostPayload,
+            ServerTime = serverTime
         });
 
         var playerPayload = LobbyMessageFactory.CreatePayloadForPlayers(lobby);
@@ -53,7 +55,8 @@ public class SignalRNotificationService(
         {
             Type = state,
             Deadline = deadline,
-            Payload = playerPayload
+            Payload = playerPayload,
+            ServerTime = serverTime
         });
     }
 

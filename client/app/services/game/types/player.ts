@@ -1,11 +1,12 @@
-import type { QuestionPreviewDto } from "./global";
+import type { BaseUpdate, QuestionPreviewDto, WithDeadline } from "./global";
 
-export type PlayerStateDto =
+export type PlayerStateDto = BaseUpdate & (
     | { type: "WaitingForStart", payload: null }
-    | { type: "QuestionPreview", payload: QuestionPreviewDto, deadline: number }
-    | { type: "QuestionActive", payload: QuestionActiveDto, deadline: number }
+    | { type: "QuestionPreview", payload: QuestionPreviewDto } & WithDeadline
+    | { type: "QuestionActive", payload: QuestionActiveDto } & WithDeadline
     | { type: "QuestionFinished", payload: QuestionFinishedDto }
     | { type: "GameOver", payload: null }
+);
 
 export type QuestionActiveDto = {
     text: string;

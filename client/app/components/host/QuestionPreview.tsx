@@ -1,13 +1,14 @@
 import { Box, Container, Paper, Stack, Typography } from "@mui/material";
 import { ClockProgressBar } from "../ClockProgressBar";
+import type { TimeContext } from "~/hooks/useCountdown";
 
 export type QuestionPreviewProps = {
     text: string;
     number: number;
-    deadline?: number;
+    timeContext: TimeContext
 }
 
-export function QuestionPreview({ text, number, deadline }: QuestionPreviewProps) {
+export function QuestionPreview({ text, number, timeContext }: QuestionPreviewProps) {
     return (
         <Container
             maxWidth="md"
@@ -43,7 +44,7 @@ export function QuestionPreview({ text, number, deadline }: QuestionPreviewProps
                         <Typography variant="h4" fontWeight="800">
                             {text}
                         </Typography>
-                        {!!deadline && <ClockProgressBar deadline={deadline}/>}
+                        <ClockProgressBar timeContext={timeContext}/>
                     </Stack>
                 </Paper>
             </Box>

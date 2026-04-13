@@ -1,4 +1,4 @@
-import type { QuestionPreviewDto } from "./global";
+import type { BaseUpdate, QuestionPreviewDto, WithDeadline } from "./global";
 
 // --- Host types
 export type AnswerStat = {
@@ -6,12 +6,13 @@ export type AnswerStat = {
     count: number;
 }
 
-export type HostUpdateDto =
-    | { state: "WaitingForStart"; payload: null }
-    | { state: "QuestionPreview"; payload: QuestionPreviewDto; deadline: number }
-    | { state: "QuestionActive"; payload: QuestionActiveDto; deadline: number }
-    | { state: "QuestionFinished"; payload: QuestionFinishedDto; }
-    | { state: "GameOver"; payload: null }
+export type HostUpdateDto = BaseUpdate & (
+  | { type: "WaitingForStart"; payload: null }
+  | { type: "QuestionPreview"; payload: QuestionPreviewDto } & WithDeadline
+  | { type: "QuestionActive"; payload: QuestionActiveDto } & WithDeadline
+  | { type: "QuestionFinished"; payload: QuestionFinishedDto }
+  | { type: "GameOver"; payload: null }
+);
 
 export type QuestionActiveDto = {
     text: string;

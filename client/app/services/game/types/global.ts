@@ -7,3 +7,11 @@ export type QuestionPreviewDto = {
     number: number;
     text: string;
 }
+
+export type BaseUpdate = {
+  serverTime: number;
+};
+
+export type WithDeadline = {
+  deadline: number;
+};

@@ -1,21 +1,21 @@
 import { Box, LinearProgress } from "@mui/material";
 import { useEffect, useState, useMemo } from "react";
-import { useCountdown } from "~/hooks/useCountdown";
+import { useCountdown, type TimeContext } from "~/hooks/useCountdown";
 
 type ClockProgressBarProps = {
-    deadline: number;
+    timeContext: TimeContext
 };
 
-export function ClockProgressBar({ deadline }: ClockProgressBarProps) {
-    const { seconds } = useCountdown(deadline, Date.now());
+export function ClockProgressBar({ timeContext }: ClockProgressBarProps) {
+    const { seconds } = useCountdown(timeContext);
     
     const [startTime] = useState(Date.now());
     const [totalDuration, setTotalDuration] = useState(0);
 
     useEffect(() => {
-        const diff = Math.max(0, Math.floor((deadline - startTime) / 1000));
+        const diff = Math.max(0, Math.floor((timeContext.target - startTime) / 1000));
         setTotalDuration(diff);
-    }, [deadline, startTime]);
+    }, [timeContext, startTime]);
 
     const progress = useMemo(() => {
         if (totalDuration <= 0) return 0;

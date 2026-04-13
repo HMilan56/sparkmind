@@ -4,6 +4,7 @@ import { QuestionResult } from "./QuestionResult";
 import { QuestionView } from "./QuestionView";
 import { WaitingRoom } from "./WaitingRoom";
 import type { UsePlayerReturn } from "~/hooks/usePlayer";
+import type { TimeContext } from "~/hooks/useCountdown";
 
 export type PlayerContentProps = {
     player: UsePlayerReturn;
@@ -24,10 +25,17 @@ export function PlayerContent({ player, answered, isCorrect, onAnswer }: PlayerC
     }
 
     if (type === "QuestionPreview" || (type === "QuestionActive" && !answered)) {
+        const { serverTime, deadline } = player.gameState;
+
+        const timeContext: TimeContext = {
+            start: serverTime,
+            target: deadline
+        }
+
         return (
             <QuestionView
                 enableAnswers={type === "QuestionActive"}
-                deadline={player.gameState.deadline}
+                timeContext={timeContext}
                 questionText={payload.text}
                 onAnswer={onAnswer}
             />

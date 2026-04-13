@@ -1,13 +1,18 @@
 import { useState, useEffect, useMemo } from 'react';
 
-export function useCountdown(targetTimestamp: number, serverTimeAtFetch: number) {
-    const serverOffset = useMemo(() => 
-        serverTimeAtFetch ? serverTimeAtFetch - Date.now() : 0
-    , [serverTimeAtFetch]);
+export type TimeContext = {
+    start?: number;
+    target: number;
+}
+
+export function useCountdown(timeContext: TimeContext) {
+    const { start = Date.now(), target } = timeContext;
+
+    const serverOffset = useMemo(() => start ? start - Date.now() : 0, [start]);
 
     const calculateTimeLeft = () => {
         const now = Date.now() + serverOffset;
-        const difference = targetTimestamp - now;
+        const difference = target - now;
 
         if (difference <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
 
@@ -21,6 +26,8 @@ export function useCountdown(targetTimestamp: number, serverTimeAtFetch: number)
     };
 
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+    useEffect(() => console.log(timeContext), [timeContext]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -37,7 +44,7 @@ export function useCountdown(targetTimestamp: number, serverTimeAtFetch: number)
         }, 100);
 
         return () => clearInterval(timer);
-    }, [targetTimestamp, serverOffset]);
+    }, [timeContext, serverOffset]);
 
     return timeLeft;
 };

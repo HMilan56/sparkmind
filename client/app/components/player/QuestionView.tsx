@@ -2,15 +2,16 @@ import { Container, Typography, Box, Paper, Slide, Stack } from "@mui/material";
 import { AnswerGrid } from "./AnswerGrid";
 import { Clock } from "../Clock";
 import { ClockProgressBar } from "../ClockProgressBar";
+import type { TimeContext } from "~/hooks/useCountdown";
 
 export type AnswerButtonGridProps = {
     questionText: string;
-    deadline: number;
+    timeContext: TimeContext;
     enableAnswers: boolean;
     onAnswer: (id: number) => void;
 };
 
-export function QuestionView({ questionText, deadline, enableAnswers, onAnswer }: AnswerButtonGridProps) {
+export function QuestionView({ questionText, timeContext, enableAnswers, onAnswer }: AnswerButtonGridProps) {
     return (
         <Container
             maxWidth="md"
@@ -47,7 +48,7 @@ export function QuestionView({ questionText, deadline, enableAnswers, onAnswer }
                         <Typography variant="h4" fontWeight="800">
                             {questionText}
                         </Typography>
-                        { enableAnswers ? <Clock deadline={deadline}/> : <ClockProgressBar deadline={deadline}/> }
+                        { enableAnswers ? <Clock timeContext={timeContext}/> : <ClockProgressBar timeContext={timeContext}/> }
                     </Stack>
                 </Paper>
             </Box>

@@ -16,7 +16,12 @@ export type UsePlayerReturn = {
 }
 
 export function usePlayer(): UsePlayerReturn {
-    const [gameState, setGameState] = useState<PlayerStateDto>({ type: "WaitingForStart", payload: null });
+    const [gameState, setGameState] = useState<PlayerStateDto>({
+        type: "WaitingForStart",
+        payload: null,
+        serverTime: Date.now()
+    });
+
     const [session, setSession] = useState<SessionData | null>(null);
 
     const { gameService, isConnected } = useSignalR();

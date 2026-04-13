@@ -2,20 +2,21 @@ import { Box, Button, Container, Grid, Paper, Stack, Typography } from "@mui/mat
 import type { QuestionActiveDto, QuestionFinishedDto } from "~/services/game/types/host";
 import { AnswerBox } from "./AnswerBox";
 import { Clock } from "../Clock";
+import type { TimeContext } from "~/hooks/useCountdown";
 
 function isFinished(data: QuestionActiveDto | QuestionFinishedDto): data is QuestionFinishedDto {
     return (data as QuestionFinishedDto).answerStatistics !== undefined;
 }
 
-export type QuestionResultsProps = {
+export type QuestionViewProps = {
     data: QuestionActiveDto | QuestionFinishedDto;
-    deadline?: number;
+    timeContext?: TimeContext;
     onNextQuestion: () => void;
 }
 
 const colorsInOrder: ("error" | "primary" | "warning" | "success")[] = ["error", "primary", "warning", "success"];
 
-export function QuestionView({ data, deadline, onNextQuestion }: QuestionResultsProps) {
+export function QuestionView({ data, timeContext, onNextQuestion }: QuestionViewProps) {
     const totalVotes = isFinished(data) ? data.answerStatistics.reduce((sum, stat) => sum + stat.count, 0) : 0;
 
     return (
@@ -25,7 +26,7 @@ export function QuestionView({ data, deadline, onNextQuestion }: QuestionResults
                     <Paper variant="outlined" sx={{ p: 6, textAlign: 'center' }}>
                         <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
                             <Typography variant="h4">{data.text}</Typography>
-                            {!!deadline && <Clock deadline={deadline}/>}
+                            { timeContext && <Clock timeContext={timeContext}/> }
                         </Stack>
                     </Paper>
                 </Grid>

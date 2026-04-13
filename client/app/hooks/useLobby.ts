@@ -2,12 +2,20 @@ import { useCallback, useEffect, useState } from "react";
 import type { HostUpdateDto } from "~/services/game/types/host";
 import { useSignalR } from "./useSignalR";
 
-export function useLobby(quizId: number) {
+export type UseLobbyReturn = {
+    code: string;
+    players: string[];
+    gameState: HostUpdateDto;
+    requestNextStep: () => void;
+}
+
+export function useLobby(quizId: number): UseLobbyReturn {
     const [players, setPlayers] = useState<string[]>([]);
     const [code, setCode] = useState<string>("");
-    const [stateUpdateDto, setStateUpdateDto] = useState<HostUpdateDto>({
-        state: "WaitingForStart",
-        payload: null
+    const [gameState, setGameState] = useState<HostUpdateDto>({
+        type: "WaitingForStart",
+        payload: null,
+        serverTime: Date.now()
     });
 
     const { gameService, isConnected } = useSignalR();
@@ -26,10 +34,10 @@ export function useLobby(quizId: number) {
         const unsubscribes = [
             gameService.onPlayerListUpdate(setPlayers),
             gameService.onHostUpdate(stateUpdateDto => {
-                setStateUpdateDto(stateUpdateDto);
-                console.log(stateUpdateDto.state);
+                setGameState(stateUpdateDto);
+                console.log(stateUpdateDto.type);
                 console.log(stateUpdateDto.payload);
-                console.log(stateUpdateDto.state === "QuestionActive" && stateUpdateDto.deadline)
+                console.log(stateUpdateDto.type === "QuestionActive" && stateUpdateDto.deadline)
             })
         ];
 
@@ -40,5 +48,5 @@ export function useLobby(quizId: number) {
         gameService.requestNextStep();
     }, [gameService]);
 
-    return { code, players, stateUpdateDto, requestNextStep };
+    return { code, players, gameState, requestNextStep };
 }
