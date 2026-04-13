@@ -1,8 +1,8 @@
 import { Container, Typography } from "@mui/material";
-import { QuestionView } from "~/components/host-lobby/QuestionView";
-import { QuestionPreview } from "~/components/host-lobby/QuestionPreview";
+import { QuestionView } from "~/components/host/QuestionView";
+import { QuestionPreview } from "~/components/host/QuestionPreview";
 import { Topbar } from "~/components/Topbar";
-import { WaitingRoom } from "~/components/host-lobby/WaitingRoom";
+import { WaitingRoom } from "~/components/host/WaitingRoom";
 import { useLobby } from "~/hooks/useLobby";
 import { useParams } from "react-router";
 import type { HostUpdateDto } from "~/services/game/types/host";

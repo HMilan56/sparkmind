@@ -1,16 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSignalR } from "~/contexts/SignalRContext";
 import { useSnackbar } from "~/contexts/SnackbarContext";
-import type { PlayerUpdateDto } from "~/services/game/types/player";
+import type { PlayerStateDto } from "~/services/game/types/player";
+import { useSignalR } from "./useSignalR";
 
-export type Player = {
+export type SessionData = {
     lobbyCode: string;
     nickName: string;
 }
 
-export function usePlayer() {
-    const [stateUpdateDto, setStateUpdateDto] = useState<PlayerUpdateDto>({state: "WaitingForStart", payload: null});
-    const [data, setData] = useState<Player | null>(null);
+export type UsePlayerReturn = {
+    session: SessionData | null;
+    gameState: PlayerStateDto;
+    joinLobby: (lobbyCode: string, nickName: string) => Promise<void>;
+    submitAnswer: (answer: number) => Promise<void>;
+}
+
+export function usePlayer(): UsePlayerReturn {
+    const [gameState, setGameState] = useState<PlayerStateDto>({ type: "WaitingForStart", payload: null });
+    const [session, setSession] = useState<SessionData | null>(null);
 
     const { gameService, isConnected } = useSignalR();
     const snackbar = useSnackbar();
@@ -19,8 +26,8 @@ export function usePlayer() {
         if (!isConnected) return;
         try {
             await gameService.joinLobby(lobbyCode, nickName);
-            setData({lobbyCode, nickName});
-        } catch(err) {
+            setSession({ lobbyCode, nickName });
+        } catch (err) {
             snackbar.showSnackbar("Network error: " + err, "error");
         }
     }, [gameService, isConnected]);
@@ -35,13 +42,14 @@ export function usePlayer() {
 
         const unsubscribes = [
             gameService.onPlayerUpdate(dto => {
-                console.log("recieved update: " + dto);
-                setStateUpdateDto(dto);
+                console.log("recieved update:");
+                console.log(dto);
+                setGameState(dto);
             })
         ];
 
         return () => unsubscribes.forEach(unsub => unsub());
     }, [gameService, isConnected]);
 
-    return { data, stateUpdateDto, joinLobby, submitAnswer };
+    return { session, gameState, joinLobby, submitAnswer };
 }

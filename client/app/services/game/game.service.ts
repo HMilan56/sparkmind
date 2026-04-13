@@ -1,6 +1,6 @@
 import * as signalR from '@microsoft/signalr';
 import type { HostUpdateDto } from './types/host';
-import type { PlayerUpdateDto } from './types/player';
+import type { PlayerStateDto } from './types/player';
 import { ServiceFactory } from '../service-factory';
 
 export class GameService {
@@ -69,7 +69,7 @@ export class GameService {
         return this.on("HostUpdate", callback);
     }
 
-    public onPlayerUpdate(callback: (state: PlayerUpdateDto) => void) {
+    public onPlayerUpdate(callback: (state: PlayerStateDto) => void) {
         return this.on("PlayerUpdate", callback);
     }
 

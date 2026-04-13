@@ -51,7 +51,7 @@ public class SignalRNotificationService(
         var playerPayload = LobbyMessageFactory.CreatePayloadForPlayers(lobby);
         await SendGroupAsync(lobby.Code, "PlayerUpdate", new
         {
-            State = state,
+            Type = state,
             Deadline = deadline,
             Payload = playerPayload
         });

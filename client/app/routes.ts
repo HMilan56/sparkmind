@@ -13,5 +13,5 @@ export default [
         ]),
     ]),
 
-    route("join", "pages/Join.tsx")
+    route("play", "pages/Play.tsx")
 ] satisfies RouteConfig;

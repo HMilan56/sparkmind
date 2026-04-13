@@ -35,7 +35,7 @@ export default function Home() {
 
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <Card elevation={4} sx={{ borderRadius: 4, transition: "0.3s", "&:hover": { transform: "scale(1.02)" } }}>
-                            <CardActionArea onClick={() => navigate("/join")} sx={{ p: 4 }}>
+                            <CardActionArea onClick={() => navigate("/play")} sx={{ p: 4 }}>
                                 <CardContent>
                                     <Stack alignItems="center" spacing={2}>
                                         <PersonAdd sx={{ fontSize: 80, color: "secondary.main" }} />
