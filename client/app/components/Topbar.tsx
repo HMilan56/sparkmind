@@ -30,7 +30,7 @@ export function Topbar({ title, onLogoClick, onSearch }: TopbarProps) {
 
     if (isMobile && showMobileSearch) {
         return (
-            <AppBar position="sticky" sx={{ bgcolor: 'background.paper' }}>
+            <AppBar position="sticky" sx={{ bgcolor: 'background.paper', zIndex: 10 }}>
                 <Toolbar>
                     <Stack direction="row" width="100%" alignItems="center" spacing={1}>
                         <IconButton onClick={() => setShowMobileSearch(false)}>

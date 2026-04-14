@@ -1,6 +1,6 @@
-import { Box, Card, CardActionArea, CardContent, Container, Grid, Typography, Stack } from "@mui/material";
-import { useNavigate } from "react-router";
 import { LaptopMac, PersonAdd } from "@mui/icons-material";
+import { Box, Container, Typography, Grid, Card, CardActionArea, CardContent, Stack } from "@mui/material";
+import { useNavigate } from "react-router";
 
 export default function Home() {
     const navigate = useNavigate();
