@@ -28,12 +28,14 @@ public class AuthService(UserManager<User> userManager, IConfiguration config)
     {
         var user = await userManager.FindByEmailAsync(loginRequestDto.Email);
         if (user == null)
-            return null;
+            throw new UnauthorizedAccessException("Invalid login attempt");
 
         var valid = await userManager.CheckPasswordAsync(user, loginRequestDto.Password);
-        var token = GenerateJwt(user);
+        if (!valid)
+            throw new UnauthorizedAccessException("Invalid login attempt");
         
-        return valid ? new AuthResponseDto(token) : null;
+        var token = GenerateJwt(user);
+        return new AuthResponseDto(token);
     }
 
     public async Task<User> GetUserAsync(int userId)

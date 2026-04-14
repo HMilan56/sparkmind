@@ -1,4 +1,5 @@
 import { Stack, Typography, TextField, Button, Divider, Paper } from "@mui/material";
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useSnackbar } from "~/contexts/SnackbarContext";
@@ -11,24 +12,44 @@ export default function Host() {
     const loginForm = useForm<LoginRequest>({ defaultValues: { email: "", password: "" } });
     const registerForm = useForm<RegisterRequest>({ defaultValues: { username: "", email: "", password: "" } });
 
+    const [registerLoading, setRegisterLoading] = useState(false);
+    const [loginLoading, setLoginLoading] = useState(false);
+
     const navigate = useNavigate();
     const snackbar = useSnackbar();
 
     const onLogin = async (data: LoginRequest) => {
         snackbar.showSnackbar("Logging in...", "info");
-        authService.login(data)
-            .then(async _ => {
-                await navigate("/host/library");
-                snackbar.showSnackbar("Successfully logged in", "success");
-            })
-            .catch(_ => snackbar.showSnackbar("Login attempt failed", "error"));
+        setLoginLoading(true);
+
+        try {
+            await authService.login(data);
+            await navigate("/host/library");
+            snackbar.showSnackbar("Successfully logged in", "success");
+        } catch (err) {
+            snackbar.showSnackbar("Login attempt failed", "error");
+            console.log(err);
+        } finally {
+            setLoginLoading(false);
+            loginForm.reset();
+        }
     }
 
     const onRegister = async (data: RegisterRequest) => {
         snackbar.showSnackbar("Registering....", "info");
-        authService.register(data)
-            .then(_ => snackbar.showSnackbar("Registered successfully", "success"))
-            .catch(_ => snackbar.showSnackbar("Unable to create account", "error"));
+        setRegisterLoading(true);
+
+        try {
+            await authService.register(data);
+            snackbar.showSnackbar("Registered successfully", "success");
+
+        } catch (err) {
+            snackbar.showSnackbar("Unable to create account", "error");
+            console.log(err);
+        } finally {
+            setRegisterLoading(false);
+            registerForm.reset();
+        }
     }
 
     return (
@@ -48,7 +69,7 @@ export default function Host() {
                         control={loginForm.control}
                         render={({ field }) => <TextField {...field} type="password" label="Password" fullWidth size="small" />}
                     />
-                    <Button type="submit" variant="contained" fullWidth>Login</Button>
+                    <Button type="submit" variant="contained" fullWidth loading={loginLoading}>Login</Button>
                 </Stack>
             </Paper>
 
@@ -72,7 +93,7 @@ export default function Host() {
                         control={registerForm.control}
                         render={({ field }) => <TextField {...field} type="password" label="Password" fullWidth size="small" />}
                     />
-                    <Button type="submit" variant="outlined" fullWidth>Register</Button>
+                    <Button type="submit" variant="outlined" fullWidth loading={registerLoading}>Register</Button>
                 </Stack>
             </Paper>
         </Stack>
