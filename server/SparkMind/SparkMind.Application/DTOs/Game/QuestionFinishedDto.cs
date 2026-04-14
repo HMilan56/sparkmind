@@ -4,5 +4,6 @@ public record QuestionFinishedDto(
     string Text,
     List<AnswerOptionDto> Answers,
     string CorrectAnswer,
-    List<AnswerStatDto> AnswerStatistics
+    List<AnswerStatDto> AnswerStatistics,
+    List<PlayerStatDto> LeaderBoard
 );

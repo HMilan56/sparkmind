@@ -17,7 +17,10 @@ export type QuestionFinishedDto = {
 }
 
 export type PlayerStatDto = {
+    id: string;
     name: string;
     answeredCorrectly: boolean;
     score: number;
+    delta: number;
+    streak: number;
 }

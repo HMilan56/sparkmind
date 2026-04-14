@@ -4,9 +4,11 @@ import { QuestionPreview } from "~/components/host/QuestionPreview";
 import { WaitingRoom } from "~/components/host/WaitingRoom";
 import { type UseLobbyReturn } from "~/hooks/useLobby";
 import type { TimeContext } from "~/hooks/useCountdown";
+import { useState } from "react";
+import { Leaderboard } from "./Leaderboard";
 
 export type LobbyContentProps = {
-    lobby: UseLobbyReturn
+    lobby: UseLobbyReturn;
 }
 
 function toTimeContext(dto: { serverTime: number; deadline: number }): TimeContext {
@@ -17,6 +19,8 @@ export function LobbyContent({ lobby }: LobbyContentProps) {
     const dto = lobby.gameState;
     const { type, payload } = dto;
 
+    const [showLeaderboard, setShowLeaderboard] = useState(false);
+
     if (type === "WaitingForStart") {
         return <WaitingRoom players={lobby.players} code={lobby.code} onStartGame={() => lobby.requestNextStep()} />;
     }
@@ -26,12 +30,17 @@ export function LobbyContent({ lobby }: LobbyContentProps) {
     }
 
     if (type === "QuestionActive") {
-        return <QuestionView data={payload} onNextQuestion={() => lobby.requestNextStep()} timeContext={toTimeContext(dto)} />;
+        return <QuestionView data={payload} onClick={() => lobby.requestNextStep()} timeContext={toTimeContext(dto)} />;
     }
 
-    if (type === "QuestionFinished") {
-        return <QuestionView data={payload} onNextQuestion={() => lobby.requestNextStep()} />;
+    if (type === "QuestionFinished" && !showLeaderboard) {
+        return <QuestionView data={payload} onClick={() => setShowLeaderboard(true)} />;
     }
+
+    if (type === "QuestionFinished" && showLeaderboard) {
+        return <Leaderboard players={payload.leaderBoard} onClick={() => lobby.requestNextStep()}/>
+    }
+
     return <UnhandledState stateName={type} />;
 }
 

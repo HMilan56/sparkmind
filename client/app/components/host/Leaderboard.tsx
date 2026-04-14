@@ -1,26 +1,38 @@
+import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { grey } from "@mui/material/colors";
 import { motion, AnimatePresence } from "framer-motion";
-
-export type PlayerScore = {
-    id: number;
-    name: string;
-    score: number;
-    delta: number;
-    streak: number;
-};
+import { useEffect, useState } from "react";
+import type { PlayerStatDto } from "~/services/game/types/player";
 
 export type LeaderboardProps = {
-    players: PlayerScore[];
+    players: PlayerStatDto[];
     totalQuestions?: number;
     currentQuestion?: number;
+    onClick: () => void;
 };
 
-export function Leaderboard({ players, totalQuestions = 10, currentQuestion = 10 }: LeaderboardProps) {
-    const sortedTop10 = [...players]
+export function Leaderboard({ players, totalQuestions = 10, currentQuestion = 10, onClick }: LeaderboardProps) {
+    const [displayedScores, setDisplayedScores] = useState<PlayerStatDto[]>(
+        players.map(p => ({
+            ...p,
+            delta: 0,
+            score: p.score - p.delta
+        }))
+    );
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDisplayedScores(players);
+        }, 200);
+        
+        return () => clearTimeout(timer);
+    }, [players]);
+
+    const sortedTop10 = [...displayedScores]
         .sort((a, b) => b.score - a.score)
         .slice(0, 10);
 
@@ -52,7 +64,6 @@ export function Leaderboard({ players, totalQuestions = 10, currentQuestion = 10
                                 transition={{
                                     layout: {
                                         type: "tween",
-                                        duration: 1.5,
                                         ease: "easeInOut"
                                     },
                                     opacity: { duration: 0.3 }
@@ -106,6 +117,7 @@ export function Leaderboard({ players, totalQuestions = 10, currentQuestion = 10
                     })}
                 </AnimatePresence>
             </Box>
+            <Button variant="contained" onClick={onClick}>Next question</Button>
         </Box>
     );
 }

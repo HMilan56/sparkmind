@@ -5,6 +5,18 @@ namespace SparkMind.Application.Factories;
 
 public static class LobbyMessageFactory
 {
+    private static List<PlayerStatDto> CreateLeaderBoard(Lobby lobby)
+    {
+        return lobby.Players.Select(p => new PlayerStatDto(
+            p.Id,
+            p.Name,
+            p.SubmittedAnswer == lobby.CurrentQuestion.Answers.First(a => a.IsCorrect).Text,
+            p.Score,
+            p.Delta,
+            p.Streak
+        )).ToList();
+    }
+    
     public static object CreatePayloadForHost(Lobby lobby)
     {
         return lobby.StateMachine.State switch
@@ -21,7 +33,8 @@ public static class LobbyMessageFactory
                 lobby.CurrentQuestion.Text,
                 lobby.CurrentQuestion.Answers.Select(a => new AnswerOptionDto(a.Id, a.Text)).ToList(),
                 lobby.CurrentQuestion.Answers.First(a => a.IsCorrect).Text,
-                lobby.GetAnswerStatistics().Select(stat => new AnswerStatDto(stat.Key, stat.Value)).ToList()
+                lobby.GetAnswerStatistics().Select(stat => new AnswerStatDto(stat.Key, stat.Value)).ToList(),
+                CreateLeaderBoard(lobby)
             ),
             _ => new { Message = "Transitioning..." }
         };
@@ -41,12 +54,7 @@ public static class LobbyMessageFactory
             },
             LobbyState.QuestionFinished => new
             {
-                Leaderboard = lobby.Players.Select(p => new
-                {
-                    p.Name,
-                    AnsweredCorrectly = p.SubmittedAnswer == lobby.CurrentQuestion.Answers.First(a => a.IsCorrect).Text,
-                    Score = 0
-                }).ToList()
+                Leaderboard = CreateLeaderBoard(lobby)
             },
             _ => new
             {

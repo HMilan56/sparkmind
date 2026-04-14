@@ -1,4 +1,5 @@
 import type { BaseUpdate, QuestionPreviewDto, WithDeadline } from "./global";
+import type { PlayerStatDto } from "./player";
 
 // --- Host types
 export type AnswerStat = {
@@ -27,4 +28,5 @@ export type AnswerOptionDto = {
 export type QuestionFinishedDto = QuestionActiveDto & {
     correctAnswer: string;
     answerStatistics: AnswerStat[];
+    leaderBoard: PlayerStatDto[];
 }

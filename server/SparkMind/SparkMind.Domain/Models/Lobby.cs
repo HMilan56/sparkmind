@@ -10,7 +10,7 @@ public class Lobby
         .Where(p => p.IsOnline)
         .Select(p => p.Name)
         .ToList();
-    public int QuestionIndex { get; set; } = -1;
+    public int QuestionIndex { get; private set; } = -1;
     public Question CurrentQuestion => Quiz.Questions[QuestionIndex];
     public string Code { get; } = Guid.NewGuid().ToString()[..5].ToUpper();
     public Host Host { get; }
@@ -25,12 +25,6 @@ public class Lobby
     }
 
     private bool IsGameOver() => QuestionIndex >= Quiz.Questions.Count - 1;
-
-    public void OnStateChanged(LobbyState oldState, LobbyState newState)
-    {
-        if (newState == LobbyState.QuestionPreview)
-            QuestionIndex++;
-    }
 
     public IPlayer AddOrGetPlayer(string name)
     {
@@ -55,7 +49,37 @@ public class Lobby
             return;
         
         var p = _players.FirstOrDefault(p => p.Name == player.Name);
-        p?.SubmittedAnswer = answer;
+        if (p?.SubmittedAnswer == "")
+        {
+            p.SubmittedAnswer = answer;
+        }
+    }
+
+    private void EvaluateAnswers()
+    {
+        foreach (var player in _players)
+        {
+            var correctAnswer = CurrentQuestion.Answers.First(a => a.IsCorrect).Text;
+            if (player.SubmittedAnswer == correctAnswer)
+            {
+                const int delta = 100;
+                player.Score += delta;
+                player.Delta = delta;
+            }
+            else
+            {
+                player.Delta = 0;
+            }
+            
+        }
+    }
+
+    private void ClearAnswers()
+    {
+        foreach (var player in _players)
+        {
+            player.SubmittedAnswer = "";
+        }
     }
 
     public void RequestNextStep()
@@ -64,9 +88,17 @@ public class Lobby
         
         if (oldState == newState)
             return;
-        
-        if (newState == LobbyState.QuestionPreview)
-            QuestionIndex++;
+
+        switch (newState)
+        {
+            case LobbyState.QuestionFinished:
+                EvaluateAnswers();
+                break;
+            case LobbyState.QuestionPreview:
+                ClearAnswers();
+                QuestionIndex++;
+                break;
+        }
     }
 
     public Dictionary<string, int> GetAnswerStatistics()

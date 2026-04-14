@@ -11,12 +11,12 @@ function isFinished(data: QuestionActiveDto | QuestionFinishedDto): data is Ques
 export type QuestionViewProps = {
     data: QuestionActiveDto | QuestionFinishedDto;
     timeContext?: TimeContext;
-    onNextQuestion: () => void;
+    onClick: () => void;
 }
 
 const colorsInOrder: ("error" | "primary" | "warning" | "success")[] = ["error", "primary", "warning", "success"];
 
-export function QuestionView({ data, timeContext, onNextQuestion }: QuestionViewProps) {
+export function QuestionView({ data, timeContext, onClick }: QuestionViewProps) {
     const totalVotes = isFinished(data) ? data.answerStatistics.reduce((sum, stat) => sum + stat.count, 0) : 0;
 
     return (
@@ -52,7 +52,7 @@ export function QuestionView({ data, timeContext, onNextQuestion }: QuestionView
                 })}
                 <Grid size={12}>
                     <Box display={"flex"} justifyContent={"flex-end"}>
-                        {isFinished(data) && <Button variant="outlined" onClick={() => onNextQuestion()}>Next question</Button>}
+                        {isFinished(data) && <Button variant="outlined" onClick={() => onClick()}>Next question</Button>}
                     </Box>
                 </Grid>
             </Grid>
