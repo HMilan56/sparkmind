@@ -21,6 +21,11 @@ export function LobbyContent({ lobby }: LobbyContentProps) {
 
     const [showLeaderboard, setShowLeaderboard] = useState(false);
 
+    function nextQuestion() {
+        setShowLeaderboard(false);
+        lobby.requestNextStep();
+    }
+
     if (type === "WaitingForStart") {
         return <WaitingRoom players={lobby.players} code={lobby.code} onStartGame={() => lobby.requestNextStep()} />;
     }
@@ -38,7 +43,7 @@ export function LobbyContent({ lobby }: LobbyContentProps) {
     }
 
     if (type === "QuestionFinished" && showLeaderboard) {
-        return <Leaderboard players={payload.leaderBoard} onClick={() => lobby.requestNextStep()}/>
+        return <Leaderboard players={payload.leaderBoard} onClick={nextQuestion}/>
     }
 
     return <UnhandledState stateName={type} />;
