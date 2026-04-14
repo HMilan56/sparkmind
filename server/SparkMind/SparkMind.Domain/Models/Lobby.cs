@@ -5,6 +5,7 @@ namespace SparkMind.Domain.Models;
 public class Lobby
 {
     private List<Player> _players = [];
+    private DateTimeOffset? _questionDeadline = null;
     public IReadOnlyList<IPlayer> Players => _players;
     public List<string> OnlinePlayers => _players
         .Where(p => p.IsOnline)
@@ -57,17 +58,36 @@ public class Lobby
 
     private void EvaluateAnswers()
     {
-        foreach (var player in _players)
+        var sortedPlayers = _players.OrderByDescending(p => p.SubmitTime)
+            .Select((p, i) => (p, i));
+        
+        var correctAnswer = CurrentQuestion.Answers.First(a => a.IsCorrect).Text;
+        var deadline = _questionDeadline!.Value.ToUnixTimeMilliseconds();
+        
+        foreach (var (player, index) in sortedPlayers)
         {
-            var correctAnswer = CurrentQuestion.Answers.First(a => a.IsCorrect).Text;
             if (player.SubmittedAnswer == correctAnswer)
             {
-                const int delta = 100;
+                player.Streak = Math.Min(player.Streak + 1, 3);
+
+                const int baseScore = 100;
+                
+                var streakFactor = player.Streak >= 2 ? player.Streak * 50 : 0;
+                var speedFactor = (int) Math.Floor((deadline - player.SubmitTime) * 100.0 / deadline);
+                var orderFactor = Math.Max(5 - index, 0) * 50;
+                
+                var delta = baseScore + streakFactor + speedFactor + orderFactor;
                 player.Score += delta;
                 player.Delta = delta;
+                
+                Console.WriteLine("Streak Factor: " + streakFactor);
+                Console.WriteLine("Speed Factor: " + speedFactor);
+                Console.WriteLine("Order Factor: " + orderFactor);
+                Console.WriteLine("Total Score: " + player.Score);
             }
             else
             {
+                player.Streak = 0;
                 player.Delta = 0;
             }
             
@@ -91,14 +111,18 @@ public class Lobby
 
         switch (newState)
         {
-            case LobbyState.QuestionFinished:
-                EvaluateAnswers();
-                break;
             case LobbyState.QuestionPreview:
                 ClearAnswers();
                 QuestionIndex++;
                 break;
+            case LobbyState.QuestionActive:
+                _questionDeadline = StateMachine.AutoAdvanceTimestamp;
+                break;
+            case LobbyState.QuestionFinished:
+                EvaluateAnswers();
+                break;
         }
+        
     }
 
     public Dictionary<string, int> GetAnswerStatistics()
