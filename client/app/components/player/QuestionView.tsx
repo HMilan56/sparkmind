@@ -1,7 +1,7 @@
 import { Container, Typography, Box, Paper, Slide, Stack } from "@mui/material";
 import { AnswerGrid } from "./AnswerGrid";
-import { Clock } from "../Clock";
-import { ClockProgressBar } from "../ClockProgressBar";
+import { Clock } from "../clock/Clock";
+import { ClockProgressBar } from "../clock/ClockProgressBar";
 import type { TimeContext } from "~/hooks/useCountdown";
 
 export type AnswerButtonGridProps = {

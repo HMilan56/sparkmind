@@ -1,5 +1,5 @@
 import { Container, Typography } from "@mui/material";
-import { JoinCard } from "../JoinCard";
+import { JoinCard } from "./JoinCard";
 import { QuestionResult } from "./QuestionResult";
 import { QuestionView } from "./QuestionView";
 import { WaitingRoom } from "./WaitingRoom";

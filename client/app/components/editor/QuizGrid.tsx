@@ -1,9 +1,9 @@
 import { Grid, type AlertProps } from "@mui/material";
-import { QuizCard } from "./QuizCard";
+import { QuizCard } from "../library/QuizCard";
 import type { QuizHeader } from "~/services/quiz/quiz.types";
 import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AddQuizCard } from "../AddQuizCard";
+import { AddQuizCard } from "../library/AddQuizCard";
 import { useSnackbar } from "~/contexts/SnackbarContext";
 import { ServiceFactory } from "~/services/service-factory";
 

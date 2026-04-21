@@ -1,7 +1,7 @@
 import { Box, Button, Container, Grid, Paper, Stack, Typography } from "@mui/material";
 import type { QuestionActiveDto, QuestionFinishedDto } from "~/services/game/types/host";
 import { AnswerBox } from "./AnswerBox";
-import { Clock } from "../Clock";
+import { Clock } from "../clock/Clock";
 import type { TimeContext } from "~/hooks/useCountdown";
 
 function isFinished(data: QuestionActiveDto | QuestionFinishedDto): data is QuestionFinishedDto {

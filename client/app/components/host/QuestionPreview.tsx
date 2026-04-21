@@ -1,5 +1,5 @@
 import { Box, Container, Paper, Stack, Typography } from "@mui/material";
-import { ClockProgressBar } from "../ClockProgressBar";
+import { ClockProgressBar } from "../clock/ClockProgressBar";
 import type { TimeContext } from "~/hooks/useCountdown";
 
 export type QuestionPreviewProps = {
