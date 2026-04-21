@@ -22,8 +22,8 @@ export function Questions() {
                 }
             ],
             settings: {
-                setting1: "",
-                setting2: ""
+                previewTime: 5,
+                timeLimit: 20
             },
         })
     }

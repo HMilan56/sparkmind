@@ -25,8 +25,8 @@ export type QuestionData = {
 }
 
 export type QuestionSettings = {
-    setting1: string;
-    setting2: string;
+    previewTime: number;
+    timeLimit: number;
 }
 
 export type AnswerData = {
