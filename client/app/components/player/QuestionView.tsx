@@ -19,7 +19,6 @@ export function QuestionView({ questionText, timeContext, enableAnswers, onAnswe
                 height: "100vh",
                 display: "flex",
                 flexDirection: "column",
-                py: 2,
             }}
         >
             <Box
@@ -28,7 +27,7 @@ export function QuestionView({ questionText, timeContext, enableAnswers, onAnswe
                     flexGrow: enableAnswers ? 0 : 1,
                     alignItems: "center",
                     justifyContent: "center",
-                    mt: 4,
+                    mt: 2,
                     mb: 4,
                     transition: "flex-grow 0.6s cubic-bezier(0.4, 0, 0.2, 1), margin 0.6s ease",
                 }}
@@ -45,10 +44,10 @@ export function QuestionView({ questionText, timeContext, enableAnswers, onAnswe
                     }}
                 >
                     <Stack direction="column" px={3} justifyContent={"space-between"} alignItems={"center"} spacing={3}>
-                        <Typography variant="h4" fontWeight="800">
+                        <Typography fontSize={"1rem"} fontWeight="800">
                             {questionText}
                         </Typography>
-                        { enableAnswers ? <Clock timeContext={timeContext}/> : <ClockProgressBar timeContext={timeContext}/> }
+                        { enableAnswers ? <Clock fontSize={"1rem"} timeContext={timeContext}/> : <ClockProgressBar timeContext={timeContext}/> }
                     </Stack>
                 </Paper>
             </Box>

@@ -26,7 +26,7 @@ export default function Play() {
         : false;
 
     return (
-        <Box component={"main"} sx={{ display: 'flex', flexDirection: 'column', height: '100vh', flexGrow: 1 }}>
+        <Box component={"main"} sx={{ display: 'flex', flexDirection: 'column', height: '100dvh', flexGrow: 1, overflow: 'hidden' }}>
             <Topbar title="Play" />
             <PlayerContent
                 player={player}
