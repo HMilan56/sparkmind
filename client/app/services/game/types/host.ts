@@ -12,7 +12,7 @@ export type HostUpdateDto = BaseUpdate & (
   | { type: "QuestionPreview"; payload: QuestionPreviewDto } & WithDeadline
   | { type: "QuestionActive"; payload: QuestionActiveDto } & WithDeadline
   | { type: "QuestionFinished"; payload: QuestionFinishedDto }
-  | { type: "GameOver"; payload: null }
+  | { type: "GameOver"; payload: GameOverDto }
 );
 
 export type QuestionActiveDto = {
@@ -28,5 +28,9 @@ export type AnswerOptionDto = {
 export type QuestionFinishedDto = QuestionActiveDto & {
     correctAnswer: string;
     answerStatistics: AnswerStat[];
-    leaderBoard: PlayerStatDto[];
+    leaderboard: PlayerStatDto[];
+}
+
+export type GameOverDto = {
+    leaderboard: PlayerStatDto[];
 }

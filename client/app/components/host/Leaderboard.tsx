@@ -38,7 +38,6 @@ export function Leaderboard({ players, totalQuestions = 10, currentQuestion = 10
 
     return (
         <Box sx={{ maxWidth: 480, mx: "auto", p: 2 }}>
-            {/* Header marad */}
             <Stack direction="row" justifyContent="space-between" alignItems="baseline" sx={{ mb: 2, px: 0.5 }}>
                 <Typography variant="overline" sx={{ fontWeight: 700, color: grey[600] }}>
                     LEADERBOARD

@@ -6,6 +6,7 @@ import { type UseLobbyReturn } from "~/hooks/useLobby";
 import type { TimeContext } from "~/hooks/useCountdown";
 import { useState } from "react";
 import { Leaderboard } from "./Leaderboard";
+import { GameOver } from "./GameOver";
 
 export type LobbyContentProps = {
     lobby: UseLobbyReturn;
@@ -43,7 +44,11 @@ export function LobbyContent({ lobby }: LobbyContentProps) {
     }
 
     if (type === "QuestionFinished" && showLeaderboard) {
-        return <Leaderboard players={payload.leaderBoard} onClick={nextQuestion}/>
+        return <Leaderboard players={payload.leaderboard} onClick={nextQuestion}/>
+    }
+
+    if (type === "GameOver") {
+        return <GameOver players={payload.leaderboard} onLobbyEnd={() => {}}/>
     }
 
     return <UnhandledState stateName={type} />;

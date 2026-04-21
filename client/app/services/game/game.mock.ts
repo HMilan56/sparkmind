@@ -20,5 +20,5 @@ export const mockQuestionFinishedDto: QuestionFinishedDto = {
         { answer: "Answer3", count: 8 },
         { answer: "Answer4", count: 5 },
     ],
-    leaderBoard: []
+    leaderboard: []
 };

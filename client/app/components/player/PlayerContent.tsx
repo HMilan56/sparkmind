@@ -5,6 +5,7 @@ import { QuestionView } from "./QuestionView";
 import { WaitingRoom } from "./WaitingRoom";
 import type { UsePlayerReturn } from "~/hooks/usePlayer";
 import type { TimeContext } from "~/hooks/useCountdown";
+import { GameOver } from "./GameOver";
 
 export type PlayerContentProps = {
     player: UsePlayerReturn;
@@ -48,6 +49,16 @@ export function PlayerContent({ player, answered, isCorrect, onAnswer }: PlayerC
 
     if (type === "QuestionFinished") {
         return <QuestionResult isCorrect={isCorrect} />;
+    }
+
+    if (type === "GameOver") {
+        const { leaderboard } = payload;
+        const playerStat = leaderboard.find(s => s.name === player.session?.nickName);
+        
+        if (playerStat) {
+            const rank = [...leaderboard].sort((a, b) => b.score - a.score).indexOf(playerStat) + 1;
+            return <GameOver player={playerStat} totalPlayers={leaderboard.length} rank={rank} />
+        }
     }
 
     return <UnhandledState stateName={type} />;

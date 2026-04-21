@@ -5,7 +5,7 @@ export type PlayerStateDto = BaseUpdate & (
     | { type: "QuestionPreview", payload: QuestionPreviewDto } & WithDeadline
     | { type: "QuestionActive", payload: QuestionActiveDto } & WithDeadline
     | { type: "QuestionFinished", payload: QuestionFinishedDto }
-    | { type: "GameOver", payload: null }
+    | { type: "GameOver", payload: GameOverDto }
 );
 
 export type QuestionActiveDto = {
@@ -23,4 +23,8 @@ export type PlayerStatDto = {
     score: number;
     delta: number;
     streak: number;
+}
+
+export type GameOverDto = {
+    leaderboard: PlayerStatDto[];
 }
