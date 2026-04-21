@@ -31,6 +31,21 @@ public class SignalRNotificationService(
         await SendSingleAsync(conId, "PlayerListUpdate", lobby.Players.Select(p => p.Name));
     }
 
+    public async Task NotifyPlayerStateUpdated(Lobby lobby, IPlayer player)
+    {
+        var conId = connectionRepository.GetConnectionIdByPlayer(player.Id);
+        if (conId == null)
+            return;
+        
+        await SendSingleAsync(conId, "PlayerUpdate", new
+        {
+            Type = lobby.StateMachine.State.ToString(),
+            Deadline = lobby.StateMachine.AutoAdvanceTimestamp?.ToUnixTimeMilliseconds(),
+            Payload = LobbyMessageFactory.CreatePayloadForPlayers(lobby),
+            ServerTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+        });
+    }
+    
     public async Task NotifyStateUpdated(Lobby lobby)
     {
         var hostConId = connectionRepository.GetConnectionIdByHost(lobby.Host.UserId);

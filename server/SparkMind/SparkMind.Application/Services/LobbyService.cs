@@ -36,6 +36,7 @@ public class LobbyService(
         connectionRepository.AddPlayer(connectionId, player);
         player.IsOnline = true;
         await notifier.NotifyHostPlayersUpdated(lobby);
+        await notifier.NotifyPlayerStateUpdated(lobby, player);
     }
 
     public async Task<string> CreateOrGetLobby(int userId, string connectionId, int quizId)
