@@ -6,7 +6,7 @@ public record QuizHeaderDto(int Id, string Title, string Desc);
 
 public record QuizSettingsDto(bool ShuffleQuestions, bool RandomizePlayerNames);
 
-public record QuestionSettingsDto(string Setting1, string Setting2);
+public record QuestionSettingsDto(int PreviewTime, int TimeLimit);
 
 public record AnswerDataDto(int Id, string Text, bool IsCorrect);
 

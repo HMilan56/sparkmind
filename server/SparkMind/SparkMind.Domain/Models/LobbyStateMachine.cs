@@ -1,23 +1,23 @@
 namespace SparkMind.Domain.Models;
 
-public class LobbyStateMachine(Func<bool> isGameOver)
+public class LobbyStateMachine()
 {
     public LobbyState State { get; private set; } = LobbyState.WaitingForStart;
 
     public DateTimeOffset? AutoAdvanceTimestamp { get; private set; }
     
-    public (LobbyState oldState, LobbyState newState) Advance()
+    public (LobbyState oldState, LobbyState newState) Advance(AdvanceContext context)
     {
         var oldState = State;
         
         switch (State)
         {
             case LobbyState.WaitingForStart:
-                SwitchToAndScheduleAdvance(LobbyState.QuestionPreview, TimeSpan.FromSeconds(5));
+                SwitchToAndScheduleAdvance(LobbyState.QuestionPreview, context.PreviewDuration);
                 break;
             
             case LobbyState.QuestionPreview:
-                SwitchToAndScheduleAdvance(LobbyState.QuestionActive, TimeSpan.FromSeconds(20));
+                SwitchToAndScheduleAdvance(LobbyState.QuestionActive, context.QuestionDuration);
                 break;
 
             case LobbyState.QuestionActive:
@@ -25,13 +25,13 @@ public class LobbyStateMachine(Func<bool> isGameOver)
                 break;
 
             case LobbyState.QuestionFinished:
-                if (isGameOver())
+                if (context.IsLastQuestion)
                 {
                     State = LobbyState.GameOver;
                 } 
                 else
                 {
-                    SwitchToAndScheduleAdvance(LobbyState.QuestionPreview, TimeSpan.FromSeconds(5));
+                    SwitchToAndScheduleAdvance(LobbyState.QuestionPreview, context.PreviewDuration);
                 }
                 break;
             
@@ -54,3 +54,9 @@ public class LobbyStateMachine(Func<bool> isGameOver)
         AutoAdvanceTimestamp = null;
     }
 }
+
+public record AdvanceContext(
+    TimeSpan PreviewDuration,
+    TimeSpan QuestionDuration,
+    bool IsLastQuestion
+);

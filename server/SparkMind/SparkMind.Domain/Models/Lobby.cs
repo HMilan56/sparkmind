@@ -11,21 +11,20 @@ public class Lobby
         .Where(p => p.IsOnline)
         .Select(p => p.Name)
         .ToList();
-    public int QuestionIndex { get; private set; } = -1;
+    public int QuestionIndex { get; private set; } = 0;
     public Question CurrentQuestion => Quiz.Questions[QuestionIndex];
     public string Code { get; } = Guid.NewGuid().ToString()[..5].ToUpper();
     public Host Host { get; }
     public Quiz Quiz { get; }
+    private bool IsGameOver => QuestionIndex >= Quiz.Questions.Count - 1;
     public LobbyStateMachine StateMachine { get; }
-
+    
     public Lobby(int userId, Quiz quiz)
     {
         Host = new Host { UserId = userId, lobby = this};
         Quiz = quiz;
-        StateMachine = new LobbyStateMachine(IsGameOver);
+        StateMachine = new LobbyStateMachine();
     }
-
-    private bool IsGameOver() => QuestionIndex >= Quiz.Questions.Count - 1;
 
     public IPlayer AddOrGetPlayer(string name)
     {
@@ -101,28 +100,42 @@ public class Lobby
             player.SubmittedAnswer = "";
         }
     }
-
+    
     public void RequestNextStep()
     {
-        var (oldState, newState) = StateMachine.Advance();
-        
+        var (oldState, newState) = StateMachine.Advance(BuildContext());
+
         if (oldState == newState)
             return;
 
-        switch (newState)
+        switch (oldState, newState)
         {
-            case LobbyState.QuestionPreview:
+            case (LobbyState.QuestionFinished, LobbyState.QuestionPreview):
                 ClearAnswers();
-                QuestionIndex++;
+                QuestionIndex++; 
                 break;
-            case LobbyState.QuestionActive:
+
+            case (LobbyState.QuestionPreview, LobbyState.QuestionActive):
                 _questionDeadline = StateMachine.AutoAdvanceTimestamp;
                 break;
-            case LobbyState.QuestionFinished:
+
+            case (LobbyState.QuestionActive, LobbyState.QuestionFinished):
                 EvaluateAnswers();
                 break;
         }
+    }
+
+    private AdvanceContext BuildContext()
+    {
+        // Question index increment only happens after state transition so we have to look ahead in QuestionFinished
+        // state to build the context on the (intended) upcoming question
+        var lookAhead = StateMachine.State == LobbyState.QuestionFinished && !IsGameOver;
+        var currQuestion = lookAhead ? Quiz.Questions[QuestionIndex + 1] : CurrentQuestion;
         
+        var previewDuration = TimeSpan.FromSeconds(currQuestion.Settings.PreviewTime);
+        var questionDuration = TimeSpan.FromSeconds(currQuestion.Settings.TimeLimit);
+        
+        return new AdvanceContext(previewDuration, questionDuration, IsGameOver);
     }
 
     public Dictionary<string, int> GetAnswerStatistics()
