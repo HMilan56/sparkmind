@@ -36,6 +36,10 @@ public static class LobbyMessageFactory
                 lobby.GetAnswerStatistics().Select(stat => new AnswerStatDto(stat.Key, stat.Value)).ToList(),
                 CreateLeaderBoard(lobby)
             ),
+            LobbyState.GameOver => new
+            {
+                Leaderboard = CreateLeaderBoard(lobby)
+            },
             _ => new { Message = "Transitioning..." }
         };
     }
@@ -55,6 +59,10 @@ public static class LobbyMessageFactory
             LobbyState.QuestionFinished => new
             {
                 Leaderboard = CreateLeaderBoard(lobby)
+            },
+            LobbyState.GameOver => new
+            {
+              Leaderboard = CreateLeaderBoard(lobby)  
             },
             _ => new
             {

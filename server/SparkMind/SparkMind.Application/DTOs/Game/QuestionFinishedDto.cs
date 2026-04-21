@@ -5,5 +5,5 @@ public record QuestionFinishedDto(
     List<AnswerOptionDto> Answers,
     string CorrectAnswer,
     List<AnswerStatDto> AnswerStatistics,
-    List<PlayerStatDto> LeaderBoard
+    List<PlayerStatDto> Leaderboard
 );
