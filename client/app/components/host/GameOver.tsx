@@ -55,9 +55,9 @@ export function GameOver({ players, onLobbyEnd }: GameOverProps) {
 
 function Podium({ sortedPlayers }: { sortedPlayers: PlayerStatDto[] }) {
     const podiumConfig = [
-        { player: sortedPlayers[1], rank: 2, height: 64, color: "grey.300" },
+        { player: sortedPlayers[1], rank: 2, height: 64, color: grey[300] },
         { player: sortedPlayers[0], rank: 1, height: 90, color: "warning.light" },
-        { player: sortedPlayers[2], rank: 3, height: 46, color: "brown.500" },
+        { player: sortedPlayers[2], rank: 3, height: 46, color: brown[500] },
     ].filter(item => !!item.player);
 
     return (
