@@ -38,7 +38,7 @@ public class QuizController(IQuizService quizService) : ControllerBase
     {
         var userId = GetCurrentUserId();
         var newQuiz = await quizService.CreateAsync(userId);
-        return Ok(newQuiz);
+        return CreatedAtAction("GetQuizById", new { quizId = newQuiz.Id }, newQuiz);
     }
 
     [HttpPut("update")]

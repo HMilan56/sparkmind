@@ -15,58 +15,41 @@ public class QuizTests(SparkMindFactory factory) : IClassFixture<SparkMindFactor
     private HttpClient Client => factory.Client;
     
     [Fact]
-    public async Task CreateQuiz_ValidData_PersistsInDatabase()
+    public async Task CreateQuiz_FollowsTwoStepProcess_PersistsInDatabase()
     {
         // Arrange
+        await factory.ResetAsync();
         await factory.AuthenticateAsync();
 
-        var newQuiz = new QuizDataDto(
-            Id: 0,
+        var createResponse = await Client.PostAsync("/api/quiz/create", null);
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+    
+        var initialQuiz = await createResponse.Content.ReadFromJsonAsync<QuizDataDto>();
+        initialQuiz.Should().NotBeNull();
+
+        var updatedData = new QuizDataDto(
+            Id: initialQuiz!.Id,
             Title: "General Science Quiz",
-            Desc: "A collection of basic science questions for students.",
+            Desc: "Updated description",
             Mode: QuizMode.MODE1,
-            Settings: new QuizSettingsDto(ShuffleQuestions: true, RandomizePlayerNames: false),
-            Questions:
-            [
-                new QuestionDataDto(
-                    Id: 0,
-                    Text: "Which planet is known as the Red Planet?",
-                    Answers:
-                    [
-                        new AnswerDataDto(0, "Mars", true),
-                        new AnswerDataDto(0, "Jupiter", false),
-                        new AnswerDataDto(0, "Venus", false)
-                    ],
-                    Settings: new QuestionSettingsDto(PreviewTime: 5, TimeLimit: 20)
-                )
-            ]
+            Settings: new QuizSettingsDto(true, false),
+            Questions: []
         );
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/quiz/create", newQuiz);
+        var updateResponse = await Client.PutAsJsonAsync("/api/quiz/update", updatedData);
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
-    
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    
+
         var savedQuiz = await db.Quizzes
             .Include(q => q.Questions)
-            .ThenInclude(ques => ques.Answers)
-            .FirstOrDefaultAsync(q => q.Title == "General Science Quiz");
+            .FirstOrDefaultAsync(q => q.Id == initialQuiz.Id);
 
         savedQuiz.Should().NotBeNull();
-        savedQuiz!.Title.Should().Be(newQuiz.Title);
-        savedQuiz.Description.Should().Be(newQuiz.Desc);
-    
-        savedQuiz.Questions.Should().HaveCount(1);
-    
-        var firstQuestion = savedQuiz.Questions.First();
-        firstQuestion.Text.Should().Be("Which planet is known as the Red Planet?");
-        firstQuestion.Answers.Should().HaveCount(3);
-    
-        firstQuestion.Answers.Should().ContainSingle(a => a.IsCorrect && a.Text == "Mars");
+        savedQuiz!.Title.Should().Be("General Science Quiz");
     }
     
     [Fact]

@@ -10,11 +10,7 @@ public class QuizService(QuizMapper mapper, IQuizRepository quizRepository) : IQ
     public async Task<QuizDataDto?> GetByIdAsync(int userId, int quizId)
     {
         var quiz = await quizRepository.GetByIdAsync(quizId);
-        
-        if (quiz == null)
-            return null;
-        
-        return quiz.Author.Id != userId ? throw new UnauthorizedAccessException() : mapper.MapToDto(quiz);
+        return quiz?.Author.Id != userId ? null : mapper.MapToDto(quiz);
     }
 
     public async Task<IEnumerable<QuizHeaderDto>> GetLibraryAsync(int userId)
