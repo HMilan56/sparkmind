@@ -1,3 +1,4 @@
+using System.Security.Authentication;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +15,10 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
 
         var (statusCode, title) = exception switch
         {
+            InvalidOperationException => (StatusCodes.Status400BadRequest, "Bad Request"),
+            AuthenticationException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
             UnauthorizedAccessException => (StatusCodes.Status403Forbidden, "Forbidden"),
             KeyNotFoundException => (StatusCodes.Status404NotFound, "Not Found"),
-            InvalidOperationException => (StatusCodes.Status400BadRequest, "Bad Request"),
             _ => (StatusCodes.Status500InternalServerError, "Internal Server Error")
         };
 

@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
@@ -28,11 +29,11 @@ public class AuthService(UserManager<User> userManager, IConfiguration config)
     {
         var user = await userManager.FindByEmailAsync(loginRequestDto.Email);
         if (user == null)
-            throw new UnauthorizedAccessException("Invalid login attempt");
+            throw new AuthenticationException("Invalid login attempt");
 
         var valid = await userManager.CheckPasswordAsync(user, loginRequestDto.Password);
         if (!valid)
-            throw new UnauthorizedAccessException("Invalid login attempt");
+            throw new AuthenticationException("Invalid login attempt");
         
         var token = GenerateJwt(user);
         return new AuthResponseDto(token);
