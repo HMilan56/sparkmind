@@ -62,7 +62,7 @@ public static class LobbyMessageFactory
             },
             LobbyState.GameOver => new
             {
-              Leaderboard = CreateLeaderBoard(lobby)  
+                Leaderboard = CreateLeaderBoard(lobby)  
             },
             _ => new
             {
