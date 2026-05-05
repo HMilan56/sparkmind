@@ -1,21 +1,17 @@
-using DotNet.Testcontainers.Builders;
 using FluentAssertions;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
-using SparkMind.Application.DTOs.Game;
 using SparkMind.Application.Interfaces;
-using SparkMind.Domain.Models;
-using SparkMind.Infrastructure.Data;
 using SparkMind.Tests.Integration.Fixtures;
-using SparkMind.Tests.Util;
 using Xunit.Abstractions;
 
 namespace SparkMind.Tests.Integration.Game;
 
-public class GameTests(SparkMindFactory factory, ITestOutputHelper testLogger) : GameTestBase(factory)
+public class GameTests(SparkMindFactory factory, ITestOutputHelper testLogger) : GameTestBase(factory), IAsyncLifetime
 {
-    private readonly SparkMindFactory _factory = factory;
+    public async Task InitializeAsync() => await SetupGameEnvironmentAsync();
+
+    public Task DisposeAsync() => Task.CompletedTask;
 
     private async Task RunScoringTest(bool useCorrectAnswer, string assertionMessage)
     {
@@ -36,7 +32,7 @@ public class GameTests(SparkMindFactory factory, ITestOutputHelper testLogger) :
         await WaitForState(questionFinished, "State never reached QuestionFinished");
 
         // Assert
-        using var scope = _factory.Services.CreateScope();
+        using var scope = factory.Services.CreateScope();
         var lobbyService = scope.ServiceProvider.GetRequiredService<ILobbyService>();
         var lobby = await lobbyService.GetByCodeAsync(LobbyCode);
 

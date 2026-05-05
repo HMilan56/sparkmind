@@ -22,10 +22,4 @@ public class GameFlowTests
 
         return mgr;
     }
-
-    [Fact]
-    public async Task CreateAndJoinLobbyThenSubmitAnswer()
-    {
-        throw new NotImplementedException();
-    }
 }

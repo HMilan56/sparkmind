@@ -4,14 +4,17 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SparkMind.Application.Interfaces;
-using SparkMind.Domain.Interfaces;
 using SparkMind.Infrastructure.Data;
 using SparkMind.Tests.Integration.Fixtures;
 
 namespace SparkMind.Tests.Integration.Lobby;
 
-public class LobbyTests(SparkMindFactory factory) : IClassFixture<SparkMindFactory>
+public class LobbyTests(SparkMindFactory factory) : IClassFixture<SparkMindFactory>, IAsyncLifetime
 {
+    public async Task InitializeAsync() => await factory.ResetAsync();
+
+    public Task DisposeAsync() => Task.CompletedTask;
+    
     [Fact]
     public async Task CreateOrGetLobby_WithValidUser_ReturnsCode()
     {

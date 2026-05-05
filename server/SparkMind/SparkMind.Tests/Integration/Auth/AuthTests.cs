@@ -11,15 +11,17 @@ using Xunit.Abstractions;
 
 namespace SparkMind.Tests.Integration.Auth;
 
-public class AuthTests(SparkMindFactory factory, ITestOutputHelper testOutputHelper) : IClassFixture<SparkMindFactory>
+public class AuthTests(SparkMindFactory factory, ITestOutputHelper testOutputHelper) : IClassFixture<SparkMindFactory>, IAsyncLifetime
 {
+    public async Task InitializeAsync() => await factory.ResetAsync();
+    
+    public Task DisposeAsync() => Task.CompletedTask;
+ 
     private HttpClient Client => factory.Client;
     
     [Fact]
     public async Task Register_ValidUser_ReturnsSuccess()
     {
-        await factory.ResetAsync();
-        
         // Arrange
         var request = new RegisterRequestDto("testmail@test.com", "test", "TestUser");
 

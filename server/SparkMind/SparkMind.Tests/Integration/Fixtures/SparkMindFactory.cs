@@ -144,8 +144,6 @@ public class SparkMindFactory : WebApplicationFactory<Program>, IAsyncLifetime
     
     public async Task<(int UserId, string AccessToken)> AuthenticateAsync()
     {
-        await ResetAsync();
-
         const string email = "test@test.com";
         const string password = "Password123!";
         var userId = await SeedUserAsync(email, password);

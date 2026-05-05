@@ -10,15 +10,18 @@ using SparkMind.Tests.Integration.Fixtures;
 
 namespace SparkMind.Tests.Integration.Quiz;
 
-public class QuizTests(SparkMindFactory factory) : IClassFixture<SparkMindFactory>
+public class QuizTests(SparkMindFactory factory) : IClassFixture<SparkMindFactory>, IAsyncLifetime
 {
     private HttpClient Client => factory.Client;
+    
+    public async Task InitializeAsync() => await factory.ResetAsync();
+
+    public Task DisposeAsync() => Task.CompletedTask;
     
     [Fact]
     public async Task CreateQuiz_FollowsTwoStepProcess_PersistsInDatabase()
     {
         // Arrange
-        await factory.ResetAsync();
         await factory.AuthenticateAsync();
 
         var createResponse = await Client.PostAsync("/api/quiz/create", null);
@@ -128,13 +131,13 @@ public class QuizTests(SparkMindFactory factory) : IClassFixture<SparkMindFactor
         library.Should().OnlyContain(q => q.Title.StartsWith("My "));
         library.Should().NotContain(q => q.Title == "Other User Quiz");
     }
-    
+
     [Fact]
     public async Task DeleteQuiz_RemovesAssociatedData()
     {
         // Arrange
         await factory.AuthenticateAsync();
-        
+
         int quizId;
         int questionId;
         int answerId;
@@ -142,26 +145,26 @@ public class QuizTests(SparkMindFactory factory) : IClassFixture<SparkMindFactor
         using (var scope = factory.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             var currentUser = await db.Users.FirstAsync(u => u.Email == "test@test.com");
 
-            var quiz = new Domain.Models.Quiz 
-            { 
+            var quiz = new Domain.Models.Quiz
+            {
                 Title = "Cleanup Test Quiz",
                 Author = currentUser,
-                Questions = 
-                [ 
-                    new Question 
-                    { 
-                        Text = "To be deleted", 
-                        Answers = [ new Answer { Text = "Deleted answer", IsCorrect = true } ] 
-                    } 
+                Questions =
+                [
+                    new Question
+                    {
+                        Text = "To be deleted",
+                        Answers = [new Answer { Text = "Deleted answer", IsCorrect = true }]
+                    }
                 ]
             };
-            
+
             db.Quizzes.Add(quiz);
             await db.SaveChangesAsync();
-            
+
             quizId = quiz.Id;
             questionId = quiz.Questions.First().Id;
             answerId = quiz.Questions.First().Answers.First().Id;
@@ -176,7 +179,7 @@ public class QuizTests(SparkMindFactory factory) : IClassFixture<SparkMindFactor
         using (var scope = factory.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             var deletedQuiz = await db.Quizzes.FindAsync(quizId);
             deletedQuiz.Should().BeNull();
 
